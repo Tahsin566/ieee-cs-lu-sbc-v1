@@ -8,13 +8,13 @@ export const authValidator = (username,email,IEEEID,memberType)=>{
     const usernameregex = /^[a-zA-Z ]{4,}[0-9]{0,}$/
 
     const IEEEIDregex = memberType?.toLowerCase()?.trim() === 'local' ? localregex : /^[0-9]+$/
-    if(!(usernameregex.test(username))){
+    if(!(usernameregex.test(username)) && username){
         return {success:false,message:'username can contain only alphabets and numbers and must be atleast 3 characters long'}
     }
-    if(!(emailregex.test(email))){
+    if(!(emailregex.test(email)) && email){
         return {success:false,message:'invalid email'}
     }
-    if(!(IEEEIDregex.test(IEEEID))){
+    if(!(IEEEIDregex.test(IEEEID)) && IEEEID){
         return {success:false,message:`invalid ${memberType?.toLowerCase()} IEEE ID, ${memberType?.toLowerCase()==="local" ? 'IEEE ID must be of 6 digits and start with lm': 'IEEE ID must be a number'}`}
     }
     return {success:true,message:'Success'}

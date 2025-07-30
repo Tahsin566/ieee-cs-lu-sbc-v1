@@ -61,17 +61,7 @@ export const getEventsByDate = async (req, res, next) => {
 
 export const getUpcomingEventDetailsImageAndCountDown = async (req, res, next) => {
     try {
-        const upcomingEvents = await Event.aggregate([
-            {
-                $match: { status: 'upcoming' }
-            },
-            {
-                $sort: { startdate: -1 }
-            },
-            {
-                $limit: 1
-            }
-        ])
+        const upcomingEvents = await Event.find({status:{$ne:'completed'} }, {}, { sort: { createdAt: -1 } }).limit(1)
 
         const timeString = upcomingEvents[0]?.time;
         const [hours, minutes] = timeString ? timeString?.split(':')?.map(Number) : [0,0]
@@ -79,7 +69,9 @@ export const getUpcomingEventDetailsImageAndCountDown = async (req, res, next) =
 
         const milliseconds = new Date(upcomingEvents[0]?.startdate).getTime() - new Date()?.getTime() + extraTime
 
-        if (milliseconds < 0) {
+        if (milliseconds <= 0) {
+            upcomingEvents[0].status = 'completed'
+            await upcomingEvents[0]?.save()
             return res.status(200).json({ success: true, event: upcomingEvents[0], millisecondsleft: null })
         }
 

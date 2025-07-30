@@ -1,28 +1,41 @@
 
 
-export const researchValidator = (title,author,abstract,department,category,keywords,methodology,status,fundingInfo,email,phonenumber,instituteAddress)=>{
+export const researchValidator = (
+    title=undefined,
+    author=undefined,   
+    abstract=undefined,
+    department=undefined,
+    category=undefined,
+    keywords=undefined,
+    methodology=undefined,
+    status=undefined,
+    fundingInfo=undefined,
+    email=undefined,
+    phonenumber=undefined,
+    instituteAddress=undefined
+)=>{
    
     const emailregex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     const stringregex = /^[a-zA-Z,. ]$/
     const addressregex = /^[a-zA-Z0-9,. ]$/
     const phoneRegex = /^01[3-9]{1}[0-9]{8}$/
 
-    if(!stringregex.test(title)){
+    if(!stringregex.test(title) && title){
         return {success:false,message:'invalid title'}
     }
-    if(!stringregex.test(author)){
+    if(!stringregex.test(author) && author){
         return {success:false,message:'invalid author name'}
     }
-    if(!stringregex.test(abstract)){
+    if(!stringregex.test(abstract) && abstract){
         return {success:false,message:'invalid abstract'}
     }
-    if(!stringregex.test(department)){
+    if(!stringregex.test(department) && department){
         return {success:false,message:'invalid department'}
     }
-    if(!stringregex.test(category)){
+    if(!stringregex.test(category) && category){
         return {success:false,message:'invalid category'}
     }
-    if(!stringregex.test(keywords)){
+    if(!stringregex.test(keywords) && keywords){
         return {success:false,message:'invalid keywords'}
     }
     if(!stringregex.test(methodology)){

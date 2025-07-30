@@ -1,21 +1,21 @@
-export const newsValidator = (title,author,tags,category)=>{
+export const newsValidator = (title=undefined,author=undefined,tags=undefined,category=undefined)=>{
     
     const stringregex = /^[a-zA-Z,. ]$/
 
-    if(!stringregex.test(title)){
+    if(!stringregex.test(title) && title){
         return {success:false,message:'invalid title'}
     }
-    if(!stringregex.test(author)){
+    if(!stringregex.test(author) && author){
         return {success:false,message:'invalid author'}
     }
-    if(!stringregex.test(category)){
+    if(!stringregex.test(category) && category){
         return {success:false,message:'invalid category'}
     }
-    tags.foreach((tag)=>{
-        if(!stringregex.test(tag)){
+    tags ? tags.foreach((tag)=>{
+        if(!stringregex.test(tag) && tag){
             return {success:false,message:'invalid tag'}
         }
-    })
+    }):null
     
     return {success:true,message:'Success'}
 }
