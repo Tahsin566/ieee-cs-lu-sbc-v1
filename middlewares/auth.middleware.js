@@ -9,7 +9,9 @@ export const protectedRoute = async(req,res,next)=>{
 
     try {
         const decode = jwt.verify(token,process.env.JWT_SECRET)
-        const user = await User.findOne({_id:decode._id},{password:false,updatedAt:false,_id:false})
+        const user = await User.findOne({_id:decode._id},{password:false,updatedAt:false,_id:false,achievements:false,experiences:false,profilePicture:false,userfacebook:false,userlinkedin:false})
+
+
         if(!user) return res.status(404).json({success:false,message:'user not found'})
         req.user = user
         next()

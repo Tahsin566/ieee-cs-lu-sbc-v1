@@ -58,95 +58,37 @@ router.get('/', async (req, res, next) => {
 
 
     try {
-        const programCoordinator = await Committee.aggregate([
-            {
-                $match: { designation: 'Program Coordinator' }
-            },
-            {
-                $sort: { rank: 1 }
-            }
-        ])
-        const acmCoordinator = await Committee.aggregate([
-            {
-                $match: { designation: 'ACM Coordinator' }
-            },
-            {
-                $sort: { rank: 1 }
-            }
-        ])
-        const pulicationsNewsletter = await Committee.aggregate([
-            {
-                $match: { designation: 'Publications & Newsletter Coordinator' }
-            },
-            {
-                $sort: { rank: 1 }
-            }
-        ])
-        const memberDev = await Committee.aggregate([
-            {
-                $match: { designation: 'Membership Development Coordinator' }
-            },
-            {
-                $sort: { rank: 1 }
-            }
-        ])
-        const publicity = await Committee.aggregate([
-            {
-                $match: { designation: 'Publicity Coordinator' }
-            },
-            {
-                $sort: { rank: 1 }
-            }
-        ])
-        const webmaster = await Committee.aggregate([
-            {
-                $match: { designation: 'Webmaster' }
-            },
-            {
-                $sort: { rank: 1 }
-            }
-        ])
-        const chiefReporting = await Committee.aggregate([
-            {
-                $match: { designation: 'Chief Reporting Executive' }
-            },
-            {
-                $sort: { rank: 1 }
-            }
-        ])
-        const graphicDesigner = await Committee.aggregate([
-            {
-                $match: { designation: 'Graphics Design Executive' }
-            },
-            {
-                $sort: { rank: 1 }
-            }
-        ])
-        const photoandVideoExec = await Committee.aggregate([
-            {
-                $match: { designation: 'Photography and Video Content Executive' }
-            },
-            {
-                $sort: { rank: 1 }
-            }
-        ])
-        const logistics = await Committee.aggregate([
-            {
-                $match: { designation: 'Logistic Executive' }
-            },
-            {
-                $sort: { rank: 1 }
-            }
-        ])
+        const programCoordinator = await Committee.find({ designation: 'Program Coordinator' },{},{sort: {rank: 1}})
 
-        const youthSupport = await Committee.aggregate([
-            {
-                $match: { designation: 'Youth Support Executive' }
-            },
-            {
-                $sort: { rank: 1 }
-            }
-        ])
+
+        const acmCoordinator = await Committee.find({ designation: 'ACM Coordinator' },{},{sort: {rank: 1}})
+
+
+        const pulicationsNewsletter = await Committee.find({ designation: 'Publications & Newsletter Coordinator' },{},{sort: {rank: 1}})
+
+
+        const memberDev = await Committee.find({ designation: 'Membership Development Coordinator' },{},{sort: {rank: 1}})
+
+
+        const publicity = await Committee.find({ designation: 'Publicity Coordinator' },{},{sort: {rank: 1}})
+
+
+        const webmaster = await Committee.find({ designation: 'Webmaster' },{},{sort: {rank: 1}})
+
+
+        const chiefReporting = await Committee.find({ designation: 'Chief Reporting Executive' },{},{sort: {rank: 1}})
+
+
+        const graphicDesigner = await Committee.find({ designation: 'Graphics Design Executive' },{},{sort: {rank: 1}})
+
+
+        const photoandVideoExec = await Committee.find({ designation: 'Photography and Video Content Executive' },{},{sort: {rank: 1}})
+
+
+        const logistics = await Committee.find({ designation: 'Logistic Executive' },{},{sort: {rank: 1}})
+
+
+        const youthSupport = await Committee.find({ designation: 'Youth Support Executive' },{},{sort: {rank: 1}})
 
 
         res.status(200).json({
@@ -171,7 +113,7 @@ router.get('/', async (req, res, next) => {
 
 router.get('/advisor', async (req, res, next) => {
     try {
-        const advisor = await Committee.find({ CommitteeMemType: 'Advisor' })
+        const advisor = await Committee.find({ CommitteeMemType: 'Advisory Panel' })
         res.status(200).json({ success: true, advisor })
     } catch (error) {
         next(error)
@@ -206,6 +148,7 @@ router.get('/volunteer', async (req, res, next) => {
         next(error)
     }
 })
+
 
 
 router.post('/',protectedRoute,adminRoute,async(req,res,next)=>{

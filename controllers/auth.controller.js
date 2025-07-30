@@ -149,19 +149,8 @@ export const uploadProfilePicture = async (req, res, next) => {
 
 export const getProfile = async (req, res, next) => {
 
+    const {user} = req
     try {
-        const user = await User.findOne({ email: req?.user?.email }, { updatedAt: false, password: false })
-        if (!user) {
-            console.log(user)
-            return res.status(404).json({ success: false, message: 'user not found' })
-
-        }
-        const achievements = await Achievement.find({ _id: { $in: user.achievements } })
-        user.achievements = achievements
-
-        const experiences = await Experience.find({ _id: { $in: user.experiences } })
-        user.experiences = experiences
-
         res.status(200).json({ success: true, user: user })
     } catch (error) {
         next(error)
