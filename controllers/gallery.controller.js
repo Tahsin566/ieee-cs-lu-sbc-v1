@@ -35,7 +35,7 @@ export const addToGallery = async(req,res,next)=>{
             image:galleryphoto,
             caption
         })
-        await neWGallery.save()
+        await neWGallery?.save()
         res.status(201).json({success:true,message:'image added successfully'})
     } catch (error) {
         next(error)
@@ -66,7 +66,7 @@ export const updateGallery = async(req,res,next)=>{
             existingGallery.image = await uploadFile(req?.file?.path) || ''
         }
 
-        await existingGallery.save()
+        await existingGallery?.save()
         res.status(200).json({success:true,message:'image updated successfully'})
     } catch (error) {
         next(error)

@@ -24,7 +24,7 @@ export const addExperience = async (req, res, next) => {
 
 
         const experience = new Experience({ title, description, startDate, endDate: endDate || new Date(Date.now()) })
-        await experience.save()
+        await experience?.save()
 
         const existingUser = await User.findOne({ IEEEID: IEEEID })
 
@@ -33,7 +33,7 @@ export const addExperience = async (req, res, next) => {
         }
 
         existingUser.experiences.push(experience._id)
-        await existingUser.save()
+        await existingUser?.save()
 
 
         if (existingVolunteer) {
@@ -81,7 +81,7 @@ export const addExperience = async (req, res, next) => {
                 hosted_image: existingUser?.profilePicture
             })
         }
-        await newMember.save()
+        await newMember?.save()
 
 
         res.status(201).json({ success: true, message: 'Experience added' })
@@ -101,7 +101,7 @@ export const addAchievement = async (req, res, next) => {
     try {
         const image = req.file?.path ? await uploadFile(req?.file?.path) : null
         const achievements = new Achievement({ title, description, image, AchievementType, year })
-        await achievements.save()
+        await achievements?.save()
 
         const existingUser = await User.findOne({ email: req.user.email })
 
@@ -109,7 +109,7 @@ export const addAchievement = async (req, res, next) => {
             existingUser.achievements.push(achievements._id)
         }
 
-        await existingUser.save()
+        await existingUser?.save()
 
         res.status(201).json({ success: true, message: 'Achievement added' })
     } catch (error) {
@@ -138,7 +138,7 @@ export const assignAchievementToUser = async (req, res, next) => {
         if (achievementsId) {
             user.achievements.push(achievementsId)
         }
-        await user.save()
+        await user?.save()
 
         res.status(200).json({ success: true, message: 'User updated' })
     } catch (error) {

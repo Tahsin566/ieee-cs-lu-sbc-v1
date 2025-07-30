@@ -31,7 +31,7 @@ export const AddOrUpdateIEEEAbout = async(req,res,next)=>{
             existing?.image ? await deleteFile(existing.image) : null
             existing.image = await uploadFile(req.file?.path) || ''
         }
-        await existing.save()
+        await existing?.save()
         return res.status(200).json({success:true,message:'IEEE updated'})
     }
 
@@ -80,7 +80,7 @@ export const AddOrUpdateAchievementAward = async(req,res,next)=>{
             ieee.achievements.push(achievements)
         }
 
-        await ieee.save()
+        await ieee?.save()
 
         res.status(200).json({success:true,message:'IEEE updated'})
     } catch (error) {

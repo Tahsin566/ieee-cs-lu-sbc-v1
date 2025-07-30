@@ -77,7 +77,7 @@ export const addResearch = async (req, res, next) => {
 
         })
 
-        await newResearch.save()
+        await newResearch?.save()
 
 
         res.status(201).json({ success: true, message: 'Research paper added' })
@@ -88,8 +88,6 @@ export const addResearch = async (req, res, next) => {
 }
 
 export const updateResearch = async (req, res, next) => {
-
-    console.log(req.files)
 
     const { id,
         title,
@@ -125,19 +123,19 @@ export const updateResearch = async (req, res, next) => {
 
 
 
-        existingResearch.title = title
-        existingResearch.author = author
-        existingResearch.abstract = abstract
-        existingResearch.department = department
-        existingResearch.category = category
-        existingResearch.publicationDate = publicationDate
-        existingResearch.keywords = keywords
-        existingResearch.methodology = methodology
-        existingResearch.status = status
-        existingResearch.fundingInfo = fundingInfo
-        existingResearch.email = email
-        existingResearch.phonenumber = phonenumber
-        existingResearch.instituteAddress = instituteAddress;
+        title ? existingResearch.title = title : null
+        author ? existingResearch.author = author : null
+        abstract ? existingResearch.abstract = abstract : null
+        department ? existingResearch.department = department : null
+        category ? existingResearch.category = category : null
+        publicationDate ? existingResearch.publicationDate = publicationDate : null
+        keywords ? existingResearch.keywords = keywords : null
+        methodology ? existingResearch.methodology = methodology : null
+        status ? existingResearch.status = status   : null
+        fundingInfo ? existingResearch.fundingInfo = fundingInfo : null
+        email ? existingResearch.email = email : null
+        phonenumber ? existingResearch.phonenumber = phonenumber : null
+        instituteAddress ? existingResearch.instituteAddress = instituteAddress : null
 
         if(req.files[0] && req.files[1]){
 
@@ -159,7 +157,7 @@ export const updateResearch = async (req, res, next) => {
             existingResearch.supportingDocImage = await uploadFile(req?.files[0]?.path) || ''
         }
 
-        await existingResearch.save()
+        await existingResearch?.save()
         res.status(200).json({ success: true, research: existingResearch })
 
     } catch (error) {
@@ -179,7 +177,7 @@ export const deleteResearch = async (req, res, next) => {
         existingResearch.paperFile ? await deleteFile(existingResearch?.paperFile) : null
         existingResearch.supportingDocImage? await deleteFile(existingResearch?.supportingDocImage) : null
         await deleteFile(existingResearch?.supportingDocImage)
-        await Research.deleteOne({ _id: id })
+        await Research?.deleteOne({ _id: id })
         return res.status(200).json({ deleted: true })
     } catch (error) {
         next(error)
@@ -328,7 +326,7 @@ export const approveResearch = async (req, res, next) => {
             existingResearch.isApproved = false
         }
         let message = existingResearch.isApproved === true ? 'research paper approved' : 'research paper rejected'
-        await existingResearch.save()
+        await existingResearch?.save()
         return res.status(200).json({ success: true, message:message })
     } catch (error) {
         next(error)

@@ -176,6 +176,8 @@ export const addEvent = async (req, res, next) => {
 
 
 export const updateEvent = async (req, res, next) => {
+
+
     const { id, name, description, startdate, time, location, isFeatured, status, type, registrationLink } = req.body
     if (!id) {
         return res.status(400).json({ success: false, message: 'event id is required' })
@@ -210,8 +212,8 @@ export const updateEvent = async (req, res, next) => {
             existingBanner.image = existingEvent.image || ''
         }
         
-        await existingEvent.save()
-        await existingBanner.save()
+        await existingEvent?.save()
+        await existingBanner?.save()
 
         res.status(200).json({ success: true, event: existingEvent })
     } catch (error) {

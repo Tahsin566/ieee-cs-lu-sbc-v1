@@ -244,7 +244,7 @@ export const addSocialLinks = async (req, res, next) => {
             await existingCommittee.save()
         }
 
-        await foundUser.save()
+        await foundUser?.save()
 
         res.json({ success: true, message: "Updated successfully" })
     } catch (error) {

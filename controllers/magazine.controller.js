@@ -81,7 +81,7 @@ export const addMagazine = async(req,res,next)=>{
             magazineImage:magazineImage,
             magazineFile:magazineFile
         })
-        await newMagazine.save()
+        await newMagazine?.save()
 
         res.status(201).json({success:true,message:'Magazine added'})
     } catch (error) {
@@ -148,7 +148,7 @@ export const updateMagazine = async(req,res,next)=>{
             existingMagazine.magazineFile = await uploadFile(req?.files[0]?.path) || ''
         }
 
-        await existingMagazine.save()
+        await existingMagazine?.save()
 
         res.status(200).json({success:true,magazine:existingMagazine})
     } catch (error) {

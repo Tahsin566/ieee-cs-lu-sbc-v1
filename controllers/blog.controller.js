@@ -114,7 +114,7 @@ export const approveBlog = async (req, res, next) => {
         }
 
         let message = existingBlog.isApproved === true ? 'blog approved' : 'blog rejected'
-        await existingBlog.save()
+        await existingBlog?.save()
         res.status(200).json({ success: true, message:message })
     }
     catch (error) {
@@ -165,7 +165,7 @@ export const addBlog = async (req, res, next) => {
             markdown,
             slug
         })
-        await newContent.save()
+        await newContent?.save()
 
         res.json({ success: true, message: 'blog added successfully' })
 
@@ -197,7 +197,7 @@ export const updateBlog = async (req, res, next) => {
             existingBlog.blogImage = await uploadFile(req?.file?.path) || ''
         }
 
-        await existingBlog.save()
+        await existingBlog?.save()
 
         res.status(200).json({ success: true, content: existingBlog })
 

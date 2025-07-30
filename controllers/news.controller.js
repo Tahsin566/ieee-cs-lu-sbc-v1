@@ -65,7 +65,7 @@ export const addNews = async(req,res,next)=>{
         const newsImage = await uploadFile(req?.file?.path) || ''
 
         const news = new News({title,author,tags,newsImage:newsImage,markdown,category})
-        await news.save()
+        await news?.save()
     
         res.status(201).json({success:true,message:'news added successfully'})
     } catch (error) {
@@ -101,7 +101,7 @@ export const updateNews = async(req,res,next)=>{
             existingNews.newsImage = await uploadFile(req?.file?.path) || ''
         }
 
-        await existingNews.save()
+        await existingNews?.save()
 
         res.status(200).json({success:true,news:existingNews})
     } catch (error) {
