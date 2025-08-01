@@ -62,6 +62,11 @@ app.get('/home',async(req,res)=>{
     res.status(200).json({success:true,text:'Home'})
 
 })
+app.get('/',async(req,res)=>{
+    
+    res.status(200).json({success:true,text:'Home'})
+
+})
 
 
 app.get('/clear',protectedRoute,adminRoute,(req,res)=>{
