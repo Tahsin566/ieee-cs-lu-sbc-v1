@@ -122,7 +122,7 @@ router.get('/advisor', async (req, res, next) => {
 
 router.get('/excom', async (req, res, next) => {
     try {
-        const excom = await Committee.find({ CommitteeMemType: 'ExCom' })
+        const excom = await Committee.find({ CommitteeMemType: 'ExCom' },{},{sort: {rank: 1}})
         res.status(200).json({ success: true, excom })
     } catch (error) {
         next(error)
@@ -131,7 +131,7 @@ router.get('/excom', async (req, res, next) => {
 
 router.get('/prevExcom', async (req, res, next) => {
     try {
-        const prevExcom = await Committee.find({ CommitteeMemType: 'Ex ExCom' })
+        const prevExcom = await Committee.find({ CommitteeMemType: 'Ex ExCom' },{},{sort: {rank: 1}})
         res.status(200).json({ success: true, prevExcom })
     }
     catch (error) {
