@@ -12,7 +12,7 @@ const committeeSchema = new mongoose.Schema({
     },
     IEEEID: {
         type: String,
-        default: ''
+        default: '0'
     },
     rank: {
         type: Number,
