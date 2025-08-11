@@ -89,11 +89,11 @@ export const updateNews = async(req,res,next)=>{
         if(!existingNews) {
             return res.status(404).json({success:false,message:'news not found'})
         }
-        existingNews.title = title
-        existingNews.author = author
-        existingNews.tags = tags
-        existingNews.markdown = markdown
-        existingNews.category = category
+        title ? existingNews.title = title : null
+        author ? existingNews.author = author : null
+        tags ? existingNews.tags = tags : null
+        markdown ? existingNews.markdown = markdown : null
+        category ? existingNews.category = category : null
         
         
         if(req?.file){

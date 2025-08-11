@@ -61,21 +61,9 @@ export const getEventsByDate = async (req, res, next) => {
 
 export const getUpcomingEventDetailsImageAndCountDown = async (req, res, next) => {
     try {
-        const upcomingEvents = await Event.find({status:{$ne:'completed'} }, {}, { sort: { createdAt: -1 } }).limit(1)
+        const events = await Event.find({status:{$ne:'completed'} }, {}, { sort: { createdAt: -1 } })
 
-        const timeString = upcomingEvents[0]?.time;
-        const [hours, minutes] = timeString ? timeString?.split(':')?.map(Number) : [0,0]
-        const extraTime = (hours * 3600000) + (minutes * 60000);
-
-        const milliseconds = new Date(upcomingEvents[0]?.startdate).getTime() - new Date()?.getTime() + extraTime
-
-        if (milliseconds <= 0) {
-            upcomingEvents[0].status = 'completed'
-            await upcomingEvents[0]?.save()
-            return res.status(200).json({ success: true, event: upcomingEvents[0], millisecondsleft: null })
-        }
-
-        res.status(200).json({ success: true, event: upcomingEvents[0], millisecondsleft: milliseconds })
+        res.status(200).json({ success: true, events:events })
     } catch (error) {
         next(error)
     }
@@ -190,20 +178,20 @@ export const updateEvent = async (req, res, next) => {
         if (!existingEvent) {
             return res.status(404).json({ success: false, message: 'event not found' })
         }
-        existingEvent.name = name
-        existingEvent.description = description
-        existingEvent.startdate = startdate
-        existingEvent.time = time
-        existingEvent.location = location
-        existingEvent.isFeatured = isFeatured
-        existingEvent.status = status
-        existingEvent.type = type
-        existingEvent.registrationLink = registrationLink
+        name ? existingEvent.name = name : null
+        description ? existingEvent.description = description : null
+        startdate ? existingEvent.startdate = startdate : null
+        time ? existingEvent.time = time : null
+        location ? existingEvent.location = location : null
+        isFeatured ? existingEvent.isFeatured = isFeatured : null
+        status ? existingEvent.status = status  : null
+        type ? existingEvent.type = type : null
+        registrationLink ? existingEvent.registrationLink = registrationLink : null
 
         const existingBanner = await Banner.findById(existingEvent?.banner)
         if (existingBanner) {
-            existingBanner.title = name
-            existingBanner.description = description
+            name ? existingBanner.title = name : null
+            description ? existingBanner.description = description : null
         }
         
         if (req.file) {

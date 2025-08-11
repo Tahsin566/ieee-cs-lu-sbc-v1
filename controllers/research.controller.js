@@ -187,6 +187,7 @@ export const deleteResearch = async (req, res, next) => {
 export const getResearch = async (req, res, next) => {
     try {
         const allResearch = await Research.find({},{},{ sort: { createdAt: -1 } })
+        
         res.status(200).json({ success: true, research: allResearch })
     } catch (error) {
         next(error)
@@ -194,71 +195,144 @@ export const getResearch = async (req, res, next) => {
 }
 export const getApprovedResearch = async (req, res, next) => {
     try {
-        const allResearch = await Research.find({isApproved: true},{},{ sort: { createdAt: -1 } })
+        // const allResearch = await Research.find({isApproved: true},{},{ sort: { createdAt: -1 } })
 
-        const totalAuthor = await Research.aggregate([
-            {
-                $group: {
-                    _id: "$author",
-                    count: {
-                        $sum: 1
-                    }
-                }
+        // const totalAuthor = await Research.aggregate([
+        //     {
+        //         $group: {
+        //             _id: "$author",
+        //             count: {
+        //                 $sum: 1
+        //             }
+        //         }
                 
-            }
-        ])
+        //     }
+        // ])
 
-        const topAuthor = await Research.aggregate([
-            {
-                $match:{
-                    isApproved: true
-                }
-            },
-            {
-                $group: {
-                    _id: "$author",
-                    count: {
-                        $sum: 1
+        // const topAuthor = await Research.aggregate([
+        //     {
+        //         $match:{
+        //             isApproved: true
+        //         }
+        //     },
+        //     {
+        //         $group: {
+        //             _id: "$author",
+        //             count: {
+        //                 $sum: 1
+        //             }
+        //         }
+        //     },
+        //     {
+        //         $sort: {
+        //             count: -1
+        //         }
+        //     },
+        //     {
+        //         $limit: 2
+        //     },
+            
+        // ])
+
+        // const topcategory = await Research.aggregate([
+        //     {
+        //         $match:{
+        //             isApproved: true
+        //         }
+        //     },
+        //     {
+        //         $group: {
+        //             _id: "$category",
+        //             count: {
+        //                 $sum: 1
+        //             }
+        //         }
+        //     },
+        //     {
+        //         $sort: {
+        //             count: -1,
+        //         }
+        //     },
+        //     {
+        //         $limit: 3
+        //     },
+            
+        // ])
+
+        const [allResearch, totalAuthor, topAuthor, topcategory] = await Promise.allSettled([
+
+
+            await Research.find({isApproved: true},{paperFile:0,authorId:0,supportingDocImage:0,email:0,phonenumber:0,instituteAddress:0,paperfileslug:0},{ sort: { createdAt: -1 } }).lean(),
+
+            await Research.aggregate([
+                {
+                    $group: {
+                        _id: "$author",
+                        count: {
+                            $sum: 1
+                        }
                     }
+                    
                 }
-            },
-            {
-                $sort: {
-                    count: -1
-                }
-            },
-            {
-                $limit: 2
-            },
+            ]),
+
+            await Research.aggregate([
+                {
+                    $match:{
+                        isApproved: true
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$author",
+                        count: {
+                            $sum: 1
+                        }
+                    }
+                },
+                {
+                    $sort: {
+                        count: -1
+                    }
+                },
+                {
+                    $limit: 2
+                },
+                
+            ]),
+
+
+            await Research.aggregate([
+                {
+                    $match:{
+                        isApproved: true
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$category",
+                        count: {
+                            $sum: 1
+                        }
+                    }
+                },
+                {
+                    $sort: {
+                        count: -1,
+                    }
+                },
+                {
+                    $limit: 3
+                },
+                
+            ]),
+
             
         ])
 
-        const topcategory = await Research.aggregate([
-            {
-                $match:{
-                    isApproved: true
-                }
-            },
-            {
-                $group: {
-                    _id: "$category",
-                    count: {
-                        $sum: 1
-                    }
-                }
-            },
-            {
-                $sort: {
-                    count: -1,
-                }
-            },
-            {
-                $limit: 3
-            },
-            
-        ])
 
-        res.status(200).json({ success: true, research: allResearch, topAuthor, topcategory, length: allResearch.length, totalAuthor: totalAuthor?.length })
+        res.status(200).json({ success: true, research: allResearch.value, topAuthor: topAuthor.value, topcategory: topcategory.value, length: allResearch?.value?.length, totalAuthor: totalAuthor?.value?.length })
+
     } catch (error) {
         next(error)
     }

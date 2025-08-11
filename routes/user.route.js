@@ -17,7 +17,7 @@ router.post('/link',protectedRoute,addSocialLinks)
 router.post('/change-pass',protectedRoute,adminRoute,ChangePassByAdmin)
 router.post('/reset',protectedRoute,resetPassword)
 router.post('/upload-image',protectedRoute,upload.single("image"),uploadProfilePicture)
-router.get('/:id',protectedRoute,getUserProfile)
+router.get('/:id',getUserProfile)
 
 
 

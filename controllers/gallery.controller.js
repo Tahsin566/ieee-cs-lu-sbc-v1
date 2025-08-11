@@ -57,7 +57,7 @@ export const updateGallery = async(req,res,next)=>{
     }
     try {
         const existingGallery = await Gallery.findById(id)
-        existingGallery.caption = caption
+        caption ? existingGallery.caption = caption : null
         if(!existingGallery){
             return res.status(404).json({success:false,message:'gallery not found'})
         }

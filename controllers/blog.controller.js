@@ -18,49 +18,66 @@ export const getBlog = async (req, res, next) => {
 export const getApprovedBlog = async (req, res, next) => {
 
     try {
-        const allBlog = await Blog.find({ isApproved: true },{},{sort:{createdAt:-1}})
+        // const allBlog = await Blog.find({ isApproved: true },{},{sort:{createdAt:-1}})
 
-        const trendingBlog = await Blog.aggregate([
-            {
-                $sort: {
-                    createdAt: -1
-                }
-            },
-            {
-                $match: {
-                    isApproved: true
-                }
-            },
-            {
-                $limit: 2
-            }
-        ])
+        // const trendingBlog = await Blog.find({isApproved: true}).sort({ createdAt: -1 }).limit(2)
 
-        const topcategory = await Blog.aggregate([
-            {
-                $match: {
-                    isApproved: true
-                }
-            },
-            {
-                $group: {
-                    _id: "$category",
-                    count: {
-                        $sum: 1
-                    },
+        // const topcategory = await Blog.aggregate([
+        //     {
+        //         $match: {
+        //             isApproved: true
+        //         }
+        //     },
+        //     {
+        //         $group: {
+        //             _id: "$category",
+        //             count: {
+        //                 $sum: 1
+        //             },
                     
+        //         }
+        //     },
+        //     {
+        //         $sort: {
+        //             count: -1
+        //         }
+        //     },
+        //     {
+        //         $limit: 3
+        //     }
+        // ])
+
+        const [allBlog, trendingBlog, topcategory] = await Promise.allSettled([
+            await Blog.find({ isApproved: true },{},{sort:{createdAt:-1}}),
+            await Blog.find({isApproved: true}).sort({ createdAt: -1 }).limit(2),
+            await Blog.aggregate([
+                {
+                    $match: {
+                        isApproved: true
+                    }
+                },
+                {
+                    $group: {
+                        _id: "$category",
+                        count: {
+                            $sum: 1
+                        },
+                        
+                    }
+                },
+                {
+                    $sort: {
+                        count: -1
+                    }
+                },
+                {
+                    $limit: 3
                 }
-            },
-            {
-                $sort: {
-                    count: -1
-                }
-            },
-            {
-                $limit: 3
-            }
+            ])
+    
         ])
-        res.json({ success: true, blog: allBlog, trendingBlog, topcategory })
+
+        res.json({ success: true, blog: allBlog.value, trendingBlog:trendingBlog.value, topcategory:topcategory.value })
 
     } catch (error) {
         next(error)
@@ -187,7 +204,12 @@ export const updateBlog = async (req, res, next) => {
     try {
 
 
-        const existingBlog = await Blog.findOneAndUpdate({ _id: id }, { title, author, category, markdown })
+        const existingBlog = await Blog.findOne({ _id: id })
+        title ? existingBlog.title = title : null
+        author ? existingBlog.author = author : null
+        category ? existingBlog.category = category : null
+        markdown ? existingBlog.markdown = markdown : null
+        
         if (!existingBlog) {
             return res.status(404).json({ success: false, message: 'blog not found' })
         }

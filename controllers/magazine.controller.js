@@ -121,13 +121,13 @@ export const updateMagazine = async(req,res,next)=>{
             
             return res.status(404).json({success:false,message:'magazine not found'})
         } 
-        existingMagazine.title = title
-        existingMagazine.description = description
-        existingMagazine.issueNumber = issueNumber
-        existingMagazine.volumeNumber = volumeNumber
-        existingMagazine.publicationDate = publicationDate
-        existingMagazine.category = category
-        existingMagazine.author = author
+        title ? existingMagazine.title = title : null
+        description ? existingMagazine.description = description : null
+        issueNumber ? existingMagazine.issueNumber = issueNumber : null
+        volumeNumber ? existingMagazine.volumeNumber = volumeNumber : null
+        publicationDate ? existingMagazine.publicationDate = publicationDate : null
+        category ? existingMagazine.category = category : null
+        author ? existingMagazine.author = author : null
 
         if(req.files[0] && req.files[1]){
 

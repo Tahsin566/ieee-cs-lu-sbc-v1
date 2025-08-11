@@ -9,9 +9,8 @@ import { deleteFile, uploadFile } from '../config/cloudinary.js'
 const router = express.Router()
 
 
-router.post('/add-committee', protectedRoute, adminRoute,upload.single("image"), async (req, res, next) => {
+router.post('/add-committee', protectedRoute, adminRoute, upload.single("image"), async (req, res, next) => {
 
-    console.log(req.body)
     const { name, designation, facebookLink, linkedinLink, id, type } = req.body
     if (!(name && designation && id)) {
         // fs.unlinkSync(req.file?.path)
@@ -21,14 +20,14 @@ router.post('/add-committee', protectedRoute, adminRoute,upload.single("image"),
     const existingMember = await Committee.findOne({ IEEEID: id })
 
     if (existingMember) {
-        existingMember.name = name
-        existingMember.designation = designation
+        name ? existingMember.name = name : null
+        designation ? existingMember.designation = designation : null
         id ? existingMember.IEEEID = id : null
-        designation? existingMember.designation = designation : null
+        designation ? existingMember.designation = designation : null
         facebookLink ? existingMember.facebook = facebookLink : null
         linkedinLink ? existingMember.linkedin = linkedinLink : null
-        type? existingMember.CommitteeMemType = type : null
-        
+        type ? existingMember.CommitteeMemType = type : null
+
 
         if (req.file) {
             // fs.unlinkSync(existingMember?.hosted_image)
@@ -44,7 +43,7 @@ router.post('/add-committee', protectedRoute, adminRoute,upload.single("image"),
 
         const MemberImage = await uploadFile(req?.file?.path) || ''
 
-        const committee = new Committee({ name, designation, facebook: facebookLink, linkedin: linkedinLink, hosted_image: MemberImage, CommitteeMemType: type,IEEEID:id })
+        const committee = new Committee({ name, designation, facebook: facebookLink, linkedin: linkedinLink, hosted_image: MemberImage, CommitteeMemType: type, IEEEID: id })
         await committee.save()
 
         return res.status(201).json({ success: true, message: 'Added successfully' })
@@ -58,38 +57,20 @@ router.get('/', async (req, res, next) => {
 
 
     try {
-        const programCoordinator = await Committee.find({ designation: 'Program Coordinator' },{},{sort: {rank: 1}})
 
+        const allmembers = await Committee.find({ CommitteeMemType: 'Member' }, { user: 0, updatedAt: 0, department: 0 }, { sort: { rank: 1 } })
 
-        const acmCoordinator = await Committee.find({ designation: 'ACM Coordinator' },{},{sort: {rank: 1}})
-
-
-        const pulicationsNewsletter = await Committee.find({ designation: 'Publications & Newsletter Coordinator' },{},{sort: {rank: 1}})
-
-
-        const memberDev = await Committee.find({ designation: 'Membership Development Coordinator' },{},{sort: {rank: 1}})
-
-
-        const publicity = await Committee.find({ designation: 'Publicity Coordinator' },{},{sort: {rank: 1}})
-
-
-        const webmaster = await Committee.find({ designation: 'Webmaster' },{},{sort: {rank: 1}})
-
-
-        const chiefReporting = await Committee.find({ designation: 'Chief Reporting Executive' },{},{sort: {rank: 1}})
-
-
-        const graphicDesigner = await Committee.find({ designation: 'Graphics Design Executive' },{},{sort: {rank: 1}})
-
-
-        const photoandVideoExec = await Committee.find({ designation: 'Photography and Video Content Executive' },{},{sort: {rank: 1}})
-
-
-        const logistics = await Committee.find({ designation: 'Logistic Executive' },{},{sort: {rank: 1}})
-
-
-        const youthSupport = await Committee.find({ designation: 'Youth Support Executive' },{},{sort: {rank: 1}})
-
+        const programCoordinator = allmembers.filter((member) => member.designation === 'Program Coordinator')
+        const acmCoordinator = allmembers.filter((member) => member.designation === 'ACM Coordinator')
+        const pulicationsNewsletter = allmembers.filter((member) => member.designation === 'Publications & Newsletter Coordinator')
+        const memberDev = allmembers.filter((member) => member.designation === 'Membership Development Coordinator')
+        const publicity = allmembers.filter((member) => member.designation === 'Publicity Coordinator')
+        const webmaster = allmembers.filter((member) => member.designation === 'Webmaster')
+        const chiefReporting = allmembers.filter((member) => member.designation === 'Chief Reporting Executive')
+        const graphicDesigner = allmembers.filter((member) => member.designation === 'Graphics Design Executive')
+        const photoandVideoExec = allmembers.filter((member) => member.designation === 'Photography and Video Content Executive')
+        const logistics = allmembers.filter((member) => member.designation === 'Logistic Executive')
+        const youthSupport = allmembers.filter((member) => member.designation === 'Youth Support Executive')
 
         res.status(200).json({
             success: true,
@@ -122,7 +103,7 @@ router.get('/advisor', async (req, res, next) => {
 
 router.get('/excom', async (req, res, next) => {
     try {
-        const excom = await Committee.find({ CommitteeMemType: 'ExCom' },{},{sort: {rank: 1}})
+        const excom = await Committee.find({ CommitteeMemType: 'ExCom' }, {}, { sort: { rank: 1 } })
         res.status(200).json({ success: true, excom })
     } catch (error) {
         next(error)
@@ -131,7 +112,7 @@ router.get('/excom', async (req, res, next) => {
 
 router.get('/prevExcom', async (req, res, next) => {
     try {
-        const prevExcom = await Committee.find({ CommitteeMemType: 'Ex ExCom' },{},{sort: {rank: 1}})
+        const prevExcom = await Committee.find({ CommitteeMemType: 'Ex ExCom' }, {}, { sort: { rank: 1 } })
         res.status(200).json({ success: true, prevExcom })
     }
     catch (error) {
@@ -151,12 +132,12 @@ router.get('/volunteer', async (req, res, next) => {
 
 
 
-router.post('/',protectedRoute,adminRoute,async(req,res,next)=>{
+router.post('/', protectedRoute, adminRoute, async (req, res, next) => {
 
     try {
         const committee = await Committee.insertMany(req.body.members)
 
-        res.status(201).json({success:true,message:'Committee added'})
+        res.status(201).json({ success: true, message: 'Committee added' })
 
     } catch (error) {
         next(error)
