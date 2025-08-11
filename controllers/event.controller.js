@@ -46,7 +46,7 @@ export const getEventsByDate = async (req, res, next) => {
                 $gte: new Date(startDate)?.setHours(0, 0, 0, 0),
                 $lte: new Date(enddate)?.setHours(23, 59, 59, 999)
             },
-            
+
 
 
         })
@@ -61,9 +61,26 @@ export const getEventsByDate = async (req, res, next) => {
 
 export const getUpcomingEventDetailsImageAndCountDown = async (req, res, next) => {
     try {
-        const events = await Event.find({status:{$ne:'completed'} }, {}, { sort: { createdAt: -1 } })
+        const events = await Event.find({ status: { $ne: 'completed' } }, {}, { sort: { createdAt: -1 } })
 
-        res.status(200).json({ success: true, events:events })
+        const updatedEvents = events.map(async(event) => {
+            const timeString = event.time;
+            const [hours, minutes] = timeString ? timeString?.split(':')?.map(Number) : [0, 0]
+            const extraTime = (hours * 3600000) + (minutes * 60000);
+
+            const milliseconds = new Date(event?.startdate).getTime() - new Date()?.getTime() + extraTime
+
+            if (milliseconds <= 0) {
+                event.status = 'completed'
+            }
+            
+            await event.save()
+
+            return event
+        })
+
+
+        res.status(200).json({ success: true, events: events })
     } catch (error) {
         next(error)
     }
@@ -71,7 +88,7 @@ export const getUpcomingEventDetailsImageAndCountDown = async (req, res, next) =
 
 export const getFeaturedEvents = async (req, res, next) => {
     try {
-        const featuredEvents = await Event.find({ isFeatured: true },{},{sort:{createdAt:-1}}).limit(1)
+        const featuredEvents = await Event.find({ isFeatured: true }, {}, { sort: { createdAt: -1 } }).limit(1)
         res.status(200).json({ success: true, event: featuredEvents[0] })
     } catch (error) {
         next(error)
@@ -184,7 +201,7 @@ export const updateEvent = async (req, res, next) => {
         time ? existingEvent.time = time : null
         location ? existingEvent.location = location : null
         isFeatured ? existingEvent.isFeatured = isFeatured : null
-        status ? existingEvent.status = status  : null
+        status ? existingEvent.status = status : null
         type ? existingEvent.type = type : null
         registrationLink ? existingEvent.registrationLink = registrationLink : null
 
@@ -193,13 +210,13 @@ export const updateEvent = async (req, res, next) => {
             name ? existingBanner.title = name : null
             description ? existingBanner.description = description : null
         }
-        
+
         if (req.file) {
             await deleteFile(existingEvent?.image)
             existingEvent.image = await uploadFile(req?.file?.path)
             existingBanner.image = existingEvent.image || ''
         }
-        
+
         await existingEvent?.save()
         await existingBanner?.save()
 
