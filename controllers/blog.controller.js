@@ -48,9 +48,9 @@ export const getApprovedBlog = async (req, res, next) => {
         // ])
 
         const [allBlog, trendingBlog, topcategory] = await Promise.allSettled([
-            await Blog.find({ isApproved: true },{},{sort:{createdAt:-1}}),
-            await Blog.find({isApproved: true}).sort({ createdAt: -1 }).limit(2),
-            await Blog.aggregate([
+            Blog.find({ isApproved: true },{},{sort:{createdAt:-1}}),
+            Blog.find({isApproved: true}).sort({ createdAt: -1 }).limit(2),
+            Blog.aggregate([
                 {
                     $match: {
                         isApproved: true

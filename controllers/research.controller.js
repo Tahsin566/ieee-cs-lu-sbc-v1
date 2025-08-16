@@ -262,9 +262,9 @@ export const getApprovedResearch = async (req, res, next) => {
         const [allResearch, totalAuthor, topAuthor, topcategory] = await Promise.allSettled([
 
 
-            await Research.find({isApproved: true},{paperFile:0,authorId:0,supportingDocImage:0,email:0,phonenumber:0,instituteAddress:0,paperfileslug:0},{ sort: { createdAt: -1 } }).lean(),
+            Research.find({isApproved: true},{paperFile:0,authorId:0,supportingDocImage:0,email:0,phonenumber:0,instituteAddress:0,paperfileslug:0},{ sort: { createdAt: -1 } }).lean(),
 
-            await Research.aggregate([
+            Research.aggregate([
                 {
                     $group: {
                         _id: "$author",
@@ -276,7 +276,7 @@ export const getApprovedResearch = async (req, res, next) => {
                 }
             ]),
 
-            await Research.aggregate([
+            Research.aggregate([
                 {
                     $match:{
                         isApproved: true
@@ -302,7 +302,7 @@ export const getApprovedResearch = async (req, res, next) => {
             ]),
 
 
-            await Research.aggregate([
+            Research.aggregate([
                 {
                     $match:{
                         isApproved: true
