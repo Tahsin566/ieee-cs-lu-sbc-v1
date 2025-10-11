@@ -4,7 +4,7 @@ node_modules
 views
 
 payment.controller.js
-payment.middileware.js
+payment.middleware.js
 payment.model.js
 payment.route.js
 
