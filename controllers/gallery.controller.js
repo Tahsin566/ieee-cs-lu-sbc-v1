@@ -30,7 +30,7 @@ export const addToGallery = async(req,res,next)=>{
     }
 
     try {
-        const galleryphoto = await uploadImage(req?.file?.path)
+        const galleryphoto = await uploadFile(req?.file?.path)
         const neWGallery = new Gallery({
             image:galleryphoto,
             caption
