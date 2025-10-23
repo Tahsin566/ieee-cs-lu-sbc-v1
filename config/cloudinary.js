@@ -20,7 +20,7 @@ export const uploadFile = async (file) => {
     }
     try {
 
-        const uploadResult = await cloudinary.uploader.upload(file,{allowed_formats:["auto"],folder:'IEEE'})
+        const uploadResult = await cloudinary.uploader.upload(file,{folder:'IEEE'})
         console.log("Uploaded successfully and url is ",uploadResult.secure_url)
         return uploadResult.secure_url
 
