@@ -47,7 +47,7 @@ export const uploadImage = async (file,quality=10) => {
     
     try {
 
-        const uploadResult = await cloudinary.uploader.upload(filename,{folder:'IEEE'})
+        const uploadResult = await cloudinary.uploader.upload(jpgfilename,{folder:'IEEE'})
         console.log("Uploaded successfully and url is ",uploadResult.secure_url)
         return uploadResult.secure_url
 
