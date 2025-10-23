@@ -6,6 +6,7 @@ export async function mongoconnect(){
         console.log("Connected to mongodb")
     } catch (error) {
         console.log("Cannot connect to mongodb")
+        console.log(error)
         process.exit(1)
     }
 }

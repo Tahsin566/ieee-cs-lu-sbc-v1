@@ -1,7 +1,7 @@
 
 import multer from "multer";
 
-export const filetype = ["image/jpeg","image/png","application/pdf","image/webp"]
+export const filetype = ["image/jpeg","image/png","application/pdf","image/webp","image/heif","image/heic","image/"]
 
 
 const storage = multer.diskStorage({

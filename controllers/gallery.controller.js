@@ -1,4 +1,4 @@
-import { deleteFile, uploadFile } from "../config/cloudinary.js"
+import { deleteFile, uploadFile, uploadImage } from "../config/cloudinary.js"
 import { Gallery } from "../models/gallery.model.js"
 import fs from 'fs'
 
@@ -30,7 +30,7 @@ export const addToGallery = async(req,res,next)=>{
     }
 
     try {
-        const galleryphoto = await uploadFile(req?.file?.path)
+        const galleryphoto = await uploadImage(req?.file?.path)
         const neWGallery = new Gallery({
             image:galleryphoto,
             caption

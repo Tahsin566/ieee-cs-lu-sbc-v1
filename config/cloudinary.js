@@ -20,7 +20,7 @@ export const uploadFile = async (file) => {
     }
     try {
 
-        const uploadResult = await cloudinary.uploader.upload(file,{allowed_formats:["jpg","png","pdf","webp"],folder:'IEEE'})
+        const uploadResult = await cloudinary.uploader.upload(file,{allowed_formats:["auto"],folder:'IEEE'})
         console.log("Uploaded successfully and url is ",uploadResult.secure_url)
         return uploadResult.secure_url
 
@@ -30,7 +30,7 @@ export const uploadFile = async (file) => {
 }
 
 
-export const uploadImage = async (file,quality=10) => {
+export const uploadImage = async (file,quality=30) => {
     if(!file){
         console.log("No file provided")
         return
@@ -47,7 +47,7 @@ export const uploadImage = async (file,quality=10) => {
     
     try {
 
-        const uploadResult = await cloudinary.uploader.upload(filename,{allowed_formats:['webp','jpg','png'],folder:'IEEE'})
+        const uploadResult = await cloudinary.uploader.upload(filename,{allowed_formats:['auto'],folder:'IEEE'})
         console.log("Uploaded successfully and url is ",uploadResult.secure_url)
         return uploadResult.secure_url
 

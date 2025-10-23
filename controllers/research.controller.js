@@ -3,6 +3,7 @@ import { deleteFile, uploadFile } from "../config/cloudinary.js"
 import { Research } from "../models/research.model.js"
 import fs from 'fs'
 import { researchValidator } from "../validator/research.validator.js"
+import { transporter } from "../config/mailconfig.js"
 
 export const addResearch = async (req, res, next) => {
 
@@ -37,10 +38,10 @@ export const addResearch = async (req, res, next) => {
         return res.status(400).json({ success: false, message: 'all fields are required' })
     }
 
-    const isValid = researchValidator(title,author,abstract,department,category,keywords,methodology,status,fundingInfo,email,phonenumber,instituteAddress)
+    const isValid = researchValidator(title, author, abstract, department, category, keywords, methodology, status, fundingInfo, email, phonenumber, instituteAddress)
 
-    if(!isValid){
-        return res.json({success:false,message:isValid.message})
+    if (!isValid) {
+        return res.json({ success: false, message: isValid.message })
     }
 
 
@@ -105,7 +106,7 @@ export const updateResearch = async (req, res, next) => {
         instituteAddress
     } = req.body
 
-    if(!id){
+    if (!id) {
         return res.status(400).json({ success: false, message: 'research paper id is required' })
     }
 
@@ -131,13 +132,13 @@ export const updateResearch = async (req, res, next) => {
         publicationDate ? existingResearch.publicationDate = publicationDate : null
         keywords ? existingResearch.keywords = keywords : null
         methodology ? existingResearch.methodology = methodology : null
-        status ? existingResearch.status = status   : null
+        status ? existingResearch.status = status : null
         fundingInfo ? existingResearch.fundingInfo = fundingInfo : null
         email ? existingResearch.email = email : null
         phonenumber ? existingResearch.phonenumber = phonenumber : null
         instituteAddress ? existingResearch.instituteAddress = instituteAddress : null
 
-        if(req.files[0] && req.files[1]){
+        if (req.files[0] && req.files[1]) {
 
             await deleteFile(existingResearch?.paperFile)
             await deleteFile(existingResearch?.supportingDocImage)
@@ -146,13 +147,13 @@ export const updateResearch = async (req, res, next) => {
 
         }
 
-        
-        if(req.files[0] && req?.files[1] === undefined && req.files[0]?.mimetype === "application/pdf"){
+
+        if (req.files[0] && req?.files[1] === undefined && req.files[0]?.mimetype === "application/pdf") {
             await deleteFile(existingResearch?.paperFile)
             existingResearch.paperFile = await uploadFile(req?.files[0]?.path) || ''
         }
 
-        if(req.files[0] && req.files[1] === undefined && req.files[0]?.mimetype === "image/jpeg" || req.files[0]?.mimetype === "image/png"){
+        if (req.files[0] && req.files[1] === undefined && req.files[0]?.mimetype === "image/jpeg" || req.files[0]?.mimetype === "image/png") {
             await deleteFile(existingResearch?.supportingDocImage)
             existingResearch.supportingDocImage = await uploadFile(req?.files[0]?.path) || ''
         }
@@ -173,9 +174,9 @@ export const deleteResearch = async (req, res, next) => {
     try {
         const existingResearch = await Research.findOne({ _id: id })
         if (!existingResearch) return res.status(404).json({ success: false, message: 'research paper not found' })
-        
+
         existingResearch.paperFile ? await deleteFile(existingResearch?.paperFile) : null
-        existingResearch.supportingDocImage? await deleteFile(existingResearch?.supportingDocImage) : null
+        existingResearch.supportingDocImage ? await deleteFile(existingResearch?.supportingDocImage) : null
         await deleteFile(existingResearch?.supportingDocImage)
         await Research?.deleteOne({ _id: id })
         return res.status(200).json({ deleted: true })
@@ -186,8 +187,8 @@ export const deleteResearch = async (req, res, next) => {
 
 export const getResearch = async (req, res, next) => {
     try {
-        const allResearch = await Research.find({},{},{ sort: { createdAt: -1 } })
-        
+        const allResearch = await Research.find({}, {}, { sort: { createdAt: -1 } })
+
         res.status(200).json({ success: true, research: allResearch })
     } catch (error) {
         next(error)
@@ -205,7 +206,7 @@ export const getApprovedResearch = async (req, res, next) => {
         //                 $sum: 1
         //             }
         //         }
-                
+
         //     }
         // ])
 
@@ -231,7 +232,7 @@ export const getApprovedResearch = async (req, res, next) => {
         //     {
         //         $limit: 2
         //     },
-            
+
         // ])
 
         // const topcategory = await Research.aggregate([
@@ -256,13 +257,13 @@ export const getApprovedResearch = async (req, res, next) => {
         //     {
         //         $limit: 3
         //     },
-            
+
         // ])
 
         const [allResearch, totalAuthor, topAuthor, topcategory] = await Promise.allSettled([
 
 
-            Research.find({isApproved: true},{paperFile:0,authorId:0,supportingDocImage:0,email:0,phonenumber:0,instituteAddress:0,paperfileslug:0},{ sort: { createdAt: -1 } }).lean(),
+            Research.find({ isApproved: true }, { paperFile: 0, authorId: 0, supportingDocImage: 0, email: 0, phonenumber: 0, instituteAddress: 0, paperfileslug: 0 }, { sort: { createdAt: -1 } }).lean(),
 
             Research.aggregate([
                 {
@@ -272,13 +273,13 @@ export const getApprovedResearch = async (req, res, next) => {
                             $sum: 1
                         }
                     }
-                    
+
                 }
             ]),
 
             Research.aggregate([
                 {
-                    $match:{
+                    $match: {
                         isApproved: true
                     }
                 },
@@ -298,13 +299,13 @@ export const getApprovedResearch = async (req, res, next) => {
                 {
                     $limit: 2
                 },
-                
+
             ]),
 
 
             Research.aggregate([
                 {
-                    $match:{
+                    $match: {
                         isApproved: true
                     }
                 },
@@ -324,10 +325,10 @@ export const getApprovedResearch = async (req, res, next) => {
                 {
                     $limit: 3
                 },
-                
+
             ]),
 
-            
+
         ])
 
 
@@ -355,11 +356,11 @@ export const getResearchByDate = async (req, res, next) => {
 
         if (order === "Oldest") {
 
-            const Allresearch = await Research.find({isApproved:true}, {}, { sort: { createdAt: 1 } })
+            const Allresearch = await Research.find({ isApproved: true }, {}, { sort: { createdAt: 1 } })
             return res.status(200).json({ success: true, research: Allresearch })
         }
 
-        const Allresearch = await Research.find({isApproved:true}, {}, { sort: { createdAt: -1 } })
+        const Allresearch = await Research.find({ isApproved: true }, {}, { sort: { createdAt: -1 } })
         return res.status(200).json({ success: true, research: Allresearch })
 
     } catch (error) {
@@ -376,7 +377,7 @@ export const getResearchByCategory = async (req, res, next) => {
     }
 
     try {
-        const research = await Research.find({ category: category, isApproved:true })
+        const research = await Research.find({ category: category, isApproved: true })
         res.status(200).json({ success: true, research })
     } catch (error) {
         next(error)
@@ -391,17 +392,46 @@ export const approveResearch = async (req, res, next) => {
     try {
         const existingResearch = await Research.findById(id)
         if (!existingResearch) {
-            return res.status(404).json({ success: false, message:'research paper not found' })
+            return res.status(404).json({ success: false, message: 'research paper not found' })
         }
         if (existingResearch.isApproved === false) {
             existingResearch.isApproved = true
+
+            const mailOptions = {
+                from: 'nazmulhassantahsin566@gmail.com',
+                to: 'nazmulhassan44456@gmail.com',
+                subject: 'Your research paper has been approved',
+                html: `<p>Hi, ${existingResearch.author}</p><p>Your research paper has been approved.</p>`
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
         }
         else {
             existingResearch.isApproved = false
+            const mailOptions = {
+                from: 'nazmulhassantahsin566@gmail.com',
+                to: 'nazmulhassan44456@gmail.com',
+                subject: 'Your research paper has been rejected',
+                html: `<p>Hi, ${existingResearch.author}</p><p>Your research paper has been rejected.</p>`
+            };
+
+            transporter.sendMail(mailOptions, function (error, info) {
+                if (error) {
+                    console.log(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
         }
         let message = existingResearch.isApproved === true ? 'research paper approved' : 'research paper rejected'
         await existingResearch?.save()
-        return res.status(200).json({ success: true, message:message })
+        return res.status(200).json({ success: true, message: message })
     } catch (error) {
         next(error)
     }
