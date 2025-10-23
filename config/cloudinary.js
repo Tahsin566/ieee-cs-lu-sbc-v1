@@ -37,13 +37,13 @@ export const uploadImage = async (file,quality=10) => {
     }
     
     const filename = file?.split(".")[0]+".webp"
-    const jpgfilename = file?.split(".")[0]+".jpg"
+    const jpgfilename = file?.split(".")[0]+".jpeg"
     const pngfilename = file?.split(".")[0]+".png"
     const webpfilename = file?.split(".")[0]+".webp"
     
     
     
-    await sharp(file).webp({quality:quality,lossless:true}).toFile(filename)
+    await sharp(file).jpeg({quality:quality,lossless:true}).toFile(jpgfilename)
     
     try {
 
