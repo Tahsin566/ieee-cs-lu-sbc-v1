@@ -30,7 +30,7 @@ export const uploadFile = async (file) => {
 }
 
 
-export const uploadImage = async (file,quality=30) => {
+export const uploadImage = async (file,quality=10) => {
     if(!file){
         console.log("No file provided")
         return
