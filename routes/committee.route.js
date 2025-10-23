@@ -144,4 +144,13 @@ router.post('/', protectedRoute, adminRoute, async (req, res, next) => {
     }
 })
 
+router.delete('/:id', protectedRoute, adminRoute, async (req, res, next) => {
+    try {
+        await Committee.deleteMany({_id:req.params.id})
+        res.status(200).json({ success: true, message: 'Committee deleted' })
+    } catch (error) {
+        next(error)
+    }
+})
+
 export default router

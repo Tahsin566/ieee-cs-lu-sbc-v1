@@ -5,7 +5,7 @@ export const authValidator = (username,email,IEEEID,memberType)=>{
 
     const localregex = /^lm\d{5,}$/
 
-    const usernameregex = /^[a-zA-Z ]{4,}[0-9]{0,}$/
+    const usernameregex = /^[a-zA-Z .]{4,}[0-9]{0,}$/
 
     const IEEEIDregex = memberType?.toLowerCase()?.trim() === 'local' ? localregex : /^[0-9]+$/
     if(!(usernameregex.test(username)) && username){
