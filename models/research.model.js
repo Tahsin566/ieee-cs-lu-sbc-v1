@@ -23,7 +23,7 @@ export const researchSchema = new mongoose.Schema({
     },
     publicationDate:{
         type:Date,
-        default:Date.now(),
+        default:Date.now(Date.now()),
     },
     abstract:{
         type:String,

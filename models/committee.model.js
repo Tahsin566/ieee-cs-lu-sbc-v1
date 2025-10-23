@@ -49,7 +49,7 @@ const committeeSchema = new mongoose.Schema({
     },
     duration: {
         type: String,
-        default: '2025-2026'
+        default: `${new Date().getFullYear()}-${new Date().getFullYear() + 1}`
     },
 
 

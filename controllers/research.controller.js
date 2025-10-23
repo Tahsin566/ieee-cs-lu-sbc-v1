@@ -4,6 +4,7 @@ import { Research } from "../models/research.model.js"
 import fs from 'fs'
 import { researchValidator } from "../validator/research.validator.js"
 import { transporter } from "../config/mailconfig.js"
+import { text } from "stream/consumers"
 
 export const addResearch = async (req, res, next) => {
 
@@ -401,7 +402,8 @@ export const approveResearch = async (req, res, next) => {
                 from: 'nazmulhassantahsin566@gmail.com',
                 to: 'nazmulhassan44456@gmail.com',
                 subject: 'Your research paper has been approved',
-                html: `<p>Hi, ${existingResearch.author}</p><p>Your research paper has been approved.</p>`
+                html: `<p>Hi, ${existingResearch.author}.Your research paper has been approved.</p>`,
+                text: `Hi, ${existingResearch.author}.Your research paper has been approved.`
             };
 
             transporter.sendMail(mailOptions, function (error, info) {
@@ -418,7 +420,8 @@ export const approveResearch = async (req, res, next) => {
                 from: 'nazmulhassantahsin566@gmail.com',
                 to: 'nazmulhassan44456@gmail.com',
                 subject: 'Your research paper has been rejected',
-                html: `<p>Hi, ${existingResearch.author}</p><p>Your research paper has been rejected.</p>`
+                html: `<p>Hi, ${existingResearch.author}.Your research paper has been rejected.</p>`,
+                text: `Hi, ${existingResearch.author}.Your research paper has been rejected.`
             };
 
             transporter.sendMail(mailOptions, function (error, info) {

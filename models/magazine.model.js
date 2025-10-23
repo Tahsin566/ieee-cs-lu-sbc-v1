@@ -16,7 +16,7 @@ export const magazineSchema = new mongoose.Schema({
     },
     publicationDate:{
         type:Date,
-        default:Date.now()
+        default:Date.now(Date.now())
     },
     category:{
         type:String,
