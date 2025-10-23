@@ -25,19 +25,19 @@ export const addToGallery = async(req,res,next)=>{
 
     const {caption} = req.body
 
-    console.log(req.files[0].path)
-    
-    if(!(caption && req.file)){
-        return res.status(201).json({success:false,message:'all fields are required'})
-    }
+    console.log(req.files)
+
 
     try {
-        const galleryphoto = await uploadImage(req?.file?.path)
-        const neWGallery = new Gallery({
-            image:galleryphoto,
-            caption
+        req.files.map(async(file)=>{
+            console.log(file)
+            const galleryphoto = await uploadImage(file?.path)
+            const neWGallery = new Gallery({
+                image:galleryphoto,
+                caption : ''
+            })
+            await neWGallery?.save()
         })
-        await neWGallery?.save()
         res.status(201).json({success:true,message:'image added successfully'})
     } catch (error) {
         next(error)
