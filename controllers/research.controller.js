@@ -399,38 +399,38 @@ export const approveResearch = async (req, res, next) => {
             existingResearch.isApproved = true
 
             const mailOptions = {
-                from: 'nazmulhassantahsin566@gmail.com',
+                from:'nazmulhassantahsin566@gmail.com',
                 to: 'nazmulhassan44456@gmail.com',
                 subject: 'Your research paper has been approved',
-                html: `<p>Hi, ${existingResearch.author}.Your research paper has been approved.</p>`,
-                text: `Hi, ${existingResearch.author}.Your research paper has been approved.`
-            };
-
-            transporter.sendMail(mailOptions, function (error, info) {
+                html: `<p>Name : ${existingResearch.author}</p><p>Email:${existingResearch.email}</p><p></p>`
+              };
+    
+              transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
-                    console.log(error);
+                  console.log(error);
                 } else {
-                    console.log('Email sent: ' + info.response);
+                  console.log('Email sent: ' + info.response);
                 }
-            });
+              });
+    
         }
         else {
             existingResearch.isApproved = false
+            
             const mailOptions = {
-                from: 'nazmulhassantahsin566@gmail.com',
+                from:'nazmulhassantahsin566@gmail.com',
                 to: 'nazmulhassan44456@gmail.com',
                 subject: 'Your research paper has been rejected',
-                html: `<p>Hi, ${existingResearch.author}.Your research paper has been rejected.</p>`,
-                text: `Hi, ${existingResearch.author}.Your research paper has been rejected.`
-            };
-
-            transporter.sendMail(mailOptions, function (error, info) {
+                html: `<p>Name : ${existingResearch.author}</p><p>Email:${existingResearch.email}</p><p></p>`
+              };
+    
+              transporter.sendMail(mailOptions, function(error, info){
                 if (error) {
-                    console.log(error);
+                  console.log(error);
                 } else {
-                    console.log('Email sent: ' + info.response);
+                  console.log('Email sent: ' + info.response);
                 }
-            });
+              });
         }
         let message = existingResearch.isApproved === true ? 'research paper approved' : 'research paper rejected'
         await existingResearch?.save()
