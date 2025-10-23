@@ -24,6 +24,8 @@ export const getsinglePhoto = async(req,res,next)=>{
 export const addToGallery = async(req,res,next)=>{
 
     const {caption} = req.body
+
+    console.log(req.files[0].path)
     
     if(!(caption && req.file)){
         return res.status(201).json({success:false,message:'all fields are required'})

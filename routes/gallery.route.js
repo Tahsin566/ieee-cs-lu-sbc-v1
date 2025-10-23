@@ -9,7 +9,7 @@ const router = express.Router()
 
 router.get('/get-gallery',getGallery)
 router.get('/:id',protectedRoute,adminRoute,getsinglePhoto)
-router.post('/add-gallery',protectedRoute,adminRoute,upload.single('image'),addToGallery)
+router.post('/add-gallery-bulk',protectedRoute,adminRoute,upload.any(),addToGallery)
 router.post('/update-gallery',protectedRoute,adminRoute,upload.single('image'),updateGallery)
 router.delete('/:id',protectedRoute,adminRoute,deleteFromGallery)
 
