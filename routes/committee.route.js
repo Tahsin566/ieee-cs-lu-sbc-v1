@@ -168,7 +168,7 @@ router.delete('/:id', protectedRoute, adminRoute, async (req, res, next) => {
 
         const existingMember = await Committee.findById(req.params.id)
         
-        const existingExp = await Experience.findOne({ieeeId:existingMember.IEEEID })
+        const existingExp = await Experience.findOne({title:existingMember.designation })
 
         if(existingMember){
             existingExp.title = `Former ${existingMember.designation}`
