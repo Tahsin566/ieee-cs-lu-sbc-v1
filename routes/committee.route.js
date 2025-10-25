@@ -170,12 +170,12 @@ router.delete('/:id', protectedRoute, adminRoute, async (req, res, next) => {
         
         const existingExp = await Experience.findOne({ieeeId:existingMember.IEEEID })
 
-        if(existingExp){
+        if(existingMember){
             existingExp.title = `Former ${existingMember.designation}`
-            existingExp.description = `Former ${existingMember.designation}`,
-            await existingExp.save()
+            existingExp.description = `Former ${existingMember.designation}`
         }
-
+        
+        await existingExp.save()
         await Committee.deleteOne({_id:req.params.id})
 
         res.status(200).json({ success: true, message: 'Committee deleted' })
