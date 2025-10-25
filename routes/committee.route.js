@@ -172,7 +172,7 @@ router.delete('/:id', protectedRoute, adminRoute, async (req, res, next) => {
 
         if(existingMember){
             existingExp.title = `Former ${existingMember.designation}`
-            existingExp.description = `Former ${existingMember.designation}`
+            existingExp.description = `Former ${existingMember.designation} at IEEE CS LU SB Chapter`
         }
         
         await existingExp.save()
