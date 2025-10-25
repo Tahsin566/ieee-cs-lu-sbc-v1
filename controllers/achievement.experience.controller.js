@@ -23,7 +23,7 @@ export const addExperience = async (req, res, next) => {
         }
 
 
-        const experience = new Experience({ title, description:`${title} at IEEE CS LU SB Chapter `, startDate, endDate: endDate || new Date(Date.now()) })
+        const experience = new Experience({ title, description:`${title} at IEEE CS LU SB Chapter `, startDate, endDate: endDate || new Date(Date.now()),ieeeId:IEEEID })
         await experience?.save()
 
         const existingUser = await User.findOne({ IEEEID: IEEEID })

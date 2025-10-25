@@ -17,6 +17,10 @@ const ExperienceSchema = new mongoose.Schema({
     endDate:{
         type:String,
         default:'Present'
+    },
+    ieeeId:{
+        type:"String",
+        default:""
     }
     
 
