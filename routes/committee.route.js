@@ -167,11 +167,12 @@ router.delete('/:id', protectedRoute, adminRoute, async (req, res, next) => {
     try {
 
         const existingMember = await Committee.findById(req.params.id)
-        await Committee.deleteOne({_id:req.params.id})
-
+        
         await Experience.updateOne({title:existingMember.designation},{
             title:`Former ${existingMember.designation}`
         })
+        
+        await Committee.deleteOne({_id:req.params.id})
 
         res.status(200).json({ success: true, message: 'Committee deleted' })
     } catch (error) {
