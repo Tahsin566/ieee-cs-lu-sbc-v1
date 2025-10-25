@@ -5,6 +5,7 @@ import { protectedRoute } from '../middlewares/auth.middleware.js'
 import { adminRoute } from '../middlewares/admin.middleware.js'
 import { upload } from '../config/multer.js'
 import { deleteFile, uploadFile } from '../config/cloudinary.js'
+import { Experience } from '../models/experience.model.js'
 
 const router = express.Router()
 
@@ -92,6 +93,24 @@ router.get('/', async (req, res, next) => {
     }
 })
 
+
+router.get('/all', async (req, res, next) => {
+    try {
+
+        //i need to get members that do not have designation as volunteer and member type as Advisory panel
+
+        const allmembers = await Committee.aggregate([
+            {$match:{designation:{$ne:'Volunteer'}}},
+            {$match:{CommitteeMemType:{$ne:'Advisory Panel'}}},
+            {$match:{designation:{$ne:'Youth Support Executive'}}},
+            {$sort:{rank:1}}
+        ])
+        res.status(200).json({ success: true, allmembers })
+    } catch (error) {
+        next(error)
+    }
+})
+
 router.get('/advisor', async (req, res, next) => {
     try {
         const advisor = await Committee.find({ CommitteeMemType: 'Advisory Panel' })
@@ -146,7 +165,14 @@ router.post('/', protectedRoute, adminRoute, async (req, res, next) => {
 
 router.delete('/:id', protectedRoute, adminRoute, async (req, res, next) => {
     try {
-        await Committee.deleteMany({_id:req.params.id})
+
+        const existingMember = await Committee.findById(req.params.id)
+        await Committee.deleteOne({_id:req.params.id})
+
+        await Experience.updateOne({title:existingMember.designation},{
+            title:`Former ${existingMember.designation}`
+        })
+
         res.status(200).json({ success: true, message: 'Committee deleted' })
     } catch (error) {
         next(error)
