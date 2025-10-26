@@ -51,24 +51,33 @@ router.post('/reply',async(req,res,next)=>{
     }
 
     try {
-        const replyMailOptions = {
-            from:'nazmulhassantahsin566@gmail.com',
-            to:email,
-            subject: subject,
-            html: name ? `<p>Hi ${name}</p><p>Message: ${message}</p>` :`<p>Message: ${message}</p>`
-          };
-
-        if(!replyMailOptions){
-            return res.status(400).json({success:false,message:'invalid mail options'})
+        const mailOptions = {
+            "sender":{
+                "name":"IEEE CS LU SB Chapter",
+                "email":"nazmulhassantahsin544@gmail.com"
+            },
+            "to":[
+                {
+                    "email":email
+                }
+            ],
+            "subject":subject,
+            "htmlContent":name ? `<p>Hi ${name}</p><p>Message: ${message}</p>` :`<p>Message: ${message}</p>`
         }
 
-        transporter.sendMail(replyMailOptions,function(error,info){
-          if(error){
-              console.log(error)
-          }else{
-              console.log('Email sent:'+info.response)
-          }
+        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': process.env.API_KEY
+            },
+            body: JSON.stringify(mailOptions)
         })
+
+        if(!response.ok){
+            throw new Error('Failed to send email')
+        }
+
         return res.status(200).json({success:true,message:'Reply sent'})
     }
     catch (error) {

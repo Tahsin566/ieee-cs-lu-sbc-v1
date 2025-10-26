@@ -400,38 +400,62 @@ export const approveResearch = async (req, res, next) => {
             existingResearch.isApproved = true
 
             const mailOptions = {
-                from:'nazmulhassantahsin566@gmail.com',
-                to: 'nazmulhassan44456@gmail.com',
-                subject: 'Your research paper has been approved',
-                html: `<p>Name : ${existingResearch.author}</p><p>Email:${existingResearch.email}</p><p></p>`
-              };
+                "sender":{
+                    "name":"IEEE CS LU SB Chapter",
+                    "email":"nazmulhassantahsin544@gmail.com"
+                },
+                "to":[
+                    {
+                        "email":"nazmulhassan44456@gmail.com"
+                    }
+                ],
+                "subject":"Confirmation of approval of research paper",
+                "htmlContent":"<p>Hello Tahsin.Your paper has been approved by the IEEE CS LU SB Chapter.You can visit the website to view your work.Please contact IEEE CS LU SB Chapter for more information.</p>"
+            }
     
-              transporter.sendMail(mailOptions, function(error, info){
-                if (error) {
-                  console.log(error);
-                } else {
-                  console.log('Email sent: ' + info.response);
-                }
-              });
+            const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'api-key': process.env.API_KEY
+                },
+                body: JSON.stringify(mailOptions)
+            })
+    
+            if(!response.ok){
+                throw new Error('Failed to send email')
+            }
+    
     
         }
         else {
             existingResearch.isApproved = false
-            
             const mailOptions = {
-                from:'nazmulhassantahsin566@gmail.com',
-                to: 'nazmulhassan44456@gmail.com',
-                subject: 'Your research paper has been rejected',
-                html: `<p>Name : ${existingResearch.author}</p><p>Email:${existingResearch.email}</p><p></p>`
-              };
+                "sender":{
+                    "name":"IEEE CS LU SB Chapter",
+                    "email":"nazmulhassantahsin544@gmail.com"
+                },
+                "to":[
+                    {
+                        "email":"nazmulhassan44456@gmail.com"
+                    }
+                ],
+                "subject":"Confirmation of rejection of research paper",
+                "htmlContent":"<p>Hello Tahsin.Your paper has been rejected by the IEEE CS LU SB Chapter..Please contact IEEE CS LU SB Chapter for more information.</p>"
+            }
     
-              transporter.sendMail(mailOptions, function(error, info){
-                if (error) {
-                  console.log(error);
-                } else {
-                  console.log('Email sent: ' + info.response);
-                }
-              });
+            const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'api-key': process.env.API_KEY
+                },
+                body: JSON.stringify(mailOptions)
+            })
+
+            if(!response.ok){
+                throw new Error('Failed to send email')
+            }
         }
         let message = existingResearch.isApproved === true ? 'research paper approved' : 'research paper rejected'
         await existingResearch?.save()
