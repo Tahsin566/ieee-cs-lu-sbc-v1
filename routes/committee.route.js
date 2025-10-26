@@ -185,7 +185,7 @@ router.delete('/:id', protectedRoute, adminRoute, async (req, res, next) => {
 
         if(existingExp){
             existingExp.forEach(async (exp) => {
-                exp.title = `Former ${exp?.title}` 
+                exp.title = `Former ${existingMember?.title}` 
                 exp.description = `Former ${existingMember?.title} at IEEE CS LU SB Chapter `
                 await exp?.save()
             })
