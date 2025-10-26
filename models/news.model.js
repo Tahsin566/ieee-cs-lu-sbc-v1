@@ -51,6 +51,10 @@ export const newsSchema = new mongoose.Schema({
     vidlink:{
         type:String,
         default:""
+    },
+    photolink:{
+        type:String,
+        default:""
     }
 },{timestamps:true})
 

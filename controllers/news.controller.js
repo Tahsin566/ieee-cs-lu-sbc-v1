@@ -47,7 +47,7 @@ export const getNewsByCategory = async (req, res, next) => {
 
 export const addNews = async(req,res,next)=>{
 
-    const {title,markdown,author,tags,category,vidlink} = req.body
+    const {title,markdown,author,tags,category,vidlink,photolink} = req.body
 
 
     const existingNews = await News.findOne({title})
@@ -73,7 +73,7 @@ export const addNews = async(req,res,next)=>{
 
         const newsImage = await uploadFile(req?.file?.path) || ''
 
-        const news = new News({title,author,tags,newsImage:newsImage,markdown,category,vidlink})
+        const news = new News({title,author,tags,newsImage:newsImage,markdown,category,vidlink,photolink})
         await news?.save()
     
         res.status(201).json({success:true,message:'news added successfully'})
@@ -83,7 +83,8 @@ export const addNews = async(req,res,next)=>{
 }
 
 export const updateNews = async(req,res,next)=>{
-    const {id,title,markdown,author,tags,category,vidlink} = req.body
+    
+    const {id,title,markdown,author,tags,category,vidlink,photolink} = req.body
     if(!id){
         return res.status(400).json({success:false,message:'news id is required'})
     }
@@ -104,6 +105,7 @@ export const updateNews = async(req,res,next)=>{
         markdown ? existingNews.markdown = markdown : null
         category ? existingNews.category = category : null
         vidlink ? existingNews.vidlink = vidlink : null
+        photolink ? existingNews.photolink = photolink : null
         
         
         if(req?.file){

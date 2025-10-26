@@ -35,16 +35,20 @@ router.post('/add-committee', protectedRoute, adminRoute, upload.single("image")
             existingMember?.hosted_image ? await deleteFile(existingMember?.hosted_image) : null
             existingMember.hosted_image = await uploadFile(req?.file?.path) || ''
         }
-        await existingMember.save()
+        await existingMember?.save()
 
-        // if (designation === 'Ex ExCom') {
-        //     const existingExp = await Experience.findOne({ title :existingMember.designation, ieeeId: existingMember.IEEEID })
-        //     if (existingExp) {
-        //         existingExp.title = `Former ${existingMember.designation}` 
-        //         existingExp.description = `Former ${existingMember.designation} at IEEE CS LU SB Chapter `
-        //         await existingExp.save()
-        //     }
-        // }
+        console.log(type)
+
+        if (type === 'Ex ExCom') {
+            const existingExp = await Experience.find({ title :existingMember?.designation, ieeeId: existingMember?.IEEEID })
+            if (existingExp) {
+                existingExp.forEach(async (exp) => {
+                    exp.title = `Former ${existingMember?.designation}` 
+                    exp.description = `Former ${existingMember?.designation} at IEEE CS LU SB Chapter `
+                    await exp?.save()
+                })
+            }
+        }
 
         return res.status(200).json({ success: true, message: 'Updated successfully' })
     }
@@ -177,14 +181,15 @@ router.delete('/:id', protectedRoute, adminRoute, async (req, res, next) => {
 
         const existingMember = await Committee.findById(req.params.id)
 
-        const existingExp = await Experience.findOne({ title: existingMember.designation, ieeeId: existingMember.IEEEID })
+        const existingExp = await Experience.find({ title: existingMember?.designation, ieeeId: existingMember?.IEEEID })
 
-        if (existingMember) {
-            existingExp.title = `Former ${existingMember.designation}`
-            existingExp.description = `Former ${existingMember.designation} at IEEE CS LU SB Chapter`
+        if(existingExp){
+            existingExp.forEach(async (exp) => {
+                exp.title = `Former ${existingMember?.designation}` 
+                exp.description = `Former ${existingMember?.designation} at IEEE CS LU SB Chapter `
+                await exp?.save()
+            })
         }
-
-        await existingExp.save()
         await Committee.deleteOne({ _id: req.params.id })
 
         res.status(200).json({ success: true, message: 'Committee deleted' })
