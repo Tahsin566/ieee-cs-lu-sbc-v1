@@ -27,8 +27,7 @@ router.post('/add-banner', protectedRoute, adminRoute, upload.single("image"), a
             title: req.body.title || '',
             bannerType: req.body.type || '',
             description: req.body.description || '',
-            image: await uploadImage(req.file?.path,50) || '',
-            // image:`http://localhost:4000/${req.file?.path}`
+            image: await uploadImage(req.file?.path) || '',
         })
         await newBanner.save()
         return res.status(200).json({ success: true, message: "Banner added successfully" })
