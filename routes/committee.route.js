@@ -37,14 +37,14 @@ router.post('/add-committee', protectedRoute, adminRoute, upload.single("image")
         }
         await existingMember.save()
 
-        if (designation === 'Ex ExCom') {
-            const existingExp = await Experience.findOne({ title: existingMember.designation, ieeeId: existingMember.IEEEID })
-            if (existingMember) {
-                existingExp.title = `Former ${existingMember.designation}` 
-                existingExp.description = `Former ${existingMember.designation} at IEEE CS LU SB Chapter `
-            }
-            await existingExp.save()
-        }
+        // if (designation === 'Ex ExCom') {
+        //     const existingExp = await Experience.findOne({ title :existingMember.designation, ieeeId: existingMember.IEEEID })
+        //     if (existingExp) {
+        //         existingExp.title = `Former ${existingMember.designation}` 
+        //         existingExp.description = `Former ${existingMember.designation} at IEEE CS LU SB Chapter `
+        //         await existingExp.save()
+        //     }
+        // }
 
         return res.status(200).json({ success: true, message: 'Updated successfully' })
     }
