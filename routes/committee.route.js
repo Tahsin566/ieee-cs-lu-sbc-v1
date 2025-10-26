@@ -37,9 +37,9 @@ router.post('/add-committee', protectedRoute, adminRoute, upload.single("image")
         }
         await existingMember.save()
 
-        if (existingMember.CommitteeMemType === 'ExCom') {
+        if (designation === 'Ex ExCom') {
             const existingExp = await Experience.findOne({ title: existingMember.designation, ieeeId: existingMember.IEEEID })
-            if (existingExp) {
+            if (existingMember) {
                 existingExp.title = `Former ${existingMember.designation}` 
                 existingExp.description = `Former ${existingMember.designation} at IEEE CS LU SB Chapter `
             }
