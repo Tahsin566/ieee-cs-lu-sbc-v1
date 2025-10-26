@@ -37,6 +37,15 @@ router.post('/add-committee', protectedRoute, adminRoute, upload.single("image")
         }
         await existingMember.save()
 
+        if (existingMember.CommitteeMemType === 'ExCom') {
+            const existingExp = await Experience.findOne({ title: existingMember.designation, ieeeId: existingMember.IEEEID })
+            if (existingExp) {
+                existingExp.title = `Former ${existingMember.designation}` 
+                existingExp.description = `Former ${existingMember.designation} at IEEE CS LU SB Chapter `
+            }
+            await existingExp.save()
+        }
+
         return res.status(200).json({ success: true, message: 'Updated successfully' })
     }
 
@@ -100,10 +109,10 @@ router.get('/all', async (req, res, next) => {
         //i need to get members that do not have designation as volunteer and member type as Advisory panel
 
         const allmembers = await Committee.aggregate([
-            {$match:{designation:{$ne:'Volunteer'}}},
-            {$match:{CommitteeMemType:{$ne:'Advisory Panel'}}},
-            {$match:{designation:{$ne:'Youth Support Executive'}}},
-            {$sort:{rank:1}}
+            { $match: { designation: { $ne: 'Volunteer' } } },
+            { $match: { CommitteeMemType: { $ne: 'Advisory Panel' } } },
+            { $match: { designation: { $ne: 'Youth Support Executive' } } },
+            { $sort: { rank: 1 } }
         ])
         res.status(200).json({ success: true, allmembers })
     } catch (error) {
@@ -167,16 +176,16 @@ router.delete('/:id', protectedRoute, adminRoute, async (req, res, next) => {
     try {
 
         const existingMember = await Committee.findById(req.params.id)
-        
-        const existingExp = await Experience.findOne({title:existingMember.designation })
 
-        if(existingMember){
+        const existingExp = await Experience.findOne({ title: existingMember.designation, ieeeId: existingMember.IEEEID })
+
+        if (existingMember) {
             existingExp.title = `Former ${existingMember.designation}`
             existingExp.description = `Former ${existingMember.designation} at IEEE CS LU SB Chapter`
         }
-        
+
         await existingExp.save()
-        await Committee.deleteOne({_id:req.params.id})
+        await Committee.deleteOne({ _id: req.params.id })
 
         res.status(200).json({ success: true, message: 'Committee deleted' })
     } catch (error) {
