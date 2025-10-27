@@ -16,7 +16,7 @@ export const researchValidator = (
 )=>{
    
     const emailregex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    const stringregex = /^[a-zA-Z,. ]$/
+    const stringregex = /^[a-zA-Z,. !\?#]$/
     const addressregex = /^[a-zA-Z0-9,. ]$/
     const phoneRegex = /^01[3-9]{1}[0-9]{8}$/
 

@@ -1,7 +1,7 @@
 
 export const eventValidator = (title=undefined, description=undefined, type=undefined) => {
 
-    const stringRegex = /^[a-zA-Z,. ]$/;
+    const stringRegex = /^[a-zA-Z,. !\?]$/;
 
     if(!stringRegex.test(title) && title) {
         return { success: false, message: 'invalid title' }
