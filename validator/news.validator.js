@@ -1,6 +1,6 @@
 export const newsValidator = (title=undefined,author=undefined,tags=undefined,category=undefined)=>{
     
-    const stringregex = /^[a-zA-Z,. !\?]$/
+    const stringregex = /^[a-zA-Z0-9,. !\?]$/
 
     if(!stringregex.test(title) && title){
         return {success:false,message:'invalid title'}
