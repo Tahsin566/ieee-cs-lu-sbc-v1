@@ -1,7 +1,7 @@
 
 export const blogValidator = (title=undefined,author=undefined,category=undefined)=>{
     
-    const stringregex = /[a-zA-Z0-9,. \?!]/
+    const stringregex = /[a-zA-Z0-9,. \?!&]/
 
     if(!stringregex.test(title) && title){
         return {success:false,message:'invalid title'}
