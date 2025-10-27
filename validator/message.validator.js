@@ -1,7 +1,7 @@
 
 export const validateMessage = (name,subject,message,email) => {
     
-    const stringRegex = /^[a-zA-Z, .\?!]+$/;
+    const stringRegex = /[a-zA-Z0-9, .\?!]/;
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     const messageRegex = /^[a-zA-Z0-9]+$/;
 
