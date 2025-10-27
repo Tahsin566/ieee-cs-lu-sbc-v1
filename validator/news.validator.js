@@ -11,11 +11,7 @@ export const newsValidator = (title=undefined,author=undefined,tags=undefined,ca
     if(!stringregex.test(category) && category){
         return {success:false,message:'invalid category'}
     }
-    tags ? tags?.foreach((tag)=>{
-        if(!stringregex.test(tag) && tag){
-            return {success:false,message:'invalid tag'}
-        }
-    }):null
+    
     
     return {success:true,message:'Success'}
 }
