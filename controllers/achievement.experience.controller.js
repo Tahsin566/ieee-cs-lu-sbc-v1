@@ -64,7 +64,7 @@ export const addExperience = async (req, res, next) => {
                 hosted_image: existingUser?.profilePicture
             })
         }
-        else {
+        else if(!existingComittee){
             newMember = new Committee({
                 name: name,
                 IEEEID,
