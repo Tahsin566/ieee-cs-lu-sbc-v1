@@ -29,7 +29,7 @@ export const addExperience = async (req, res, next) => {
         }
 
         existingUser.experiences.push(experience?._id)
-        await existingUser.save()
+        await existingUser?.save()
 
 
         // if (existingVolunteer) {
@@ -77,7 +77,7 @@ export const addExperience = async (req, res, next) => {
                 hosted_image: existingUser?.profilePicture
             })
         }
-        await newMember.save()
+        await newMember?.save()
 
 
         res.status(201).json({ success: true, message: 'Experience added' })
