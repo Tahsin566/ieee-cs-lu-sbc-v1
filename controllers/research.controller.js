@@ -406,7 +406,7 @@ export const approveResearch = async (req, res, next) => {
                 },
                 "to":[
                     {
-                        "email":"nazmulhassan44456@gmail.com"
+                        "email":existingResearch.email
                     }
                 ],
                 "subject":"Confirmation of approval of research paper",
@@ -437,7 +437,7 @@ export const approveResearch = async (req, res, next) => {
                 },
                 "to":[
                     {
-                        "email":"nazmulhassan44456@gmail.com"
+                        "email":existingResearch.email
                     }
                 ],
                 "subject":"Confirmation of rejection of research paper",
