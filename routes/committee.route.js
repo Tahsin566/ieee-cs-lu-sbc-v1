@@ -58,6 +58,7 @@ router.post('/add-committee', protectedRoute, adminRoute, upload.single("image")
         const MemberImage = await uploadFile(req?.file?.path) || ''
 
         const committee = new Committee({ name, designation, facebook: facebookLink, linkedin: linkedinLink, hosted_image: MemberImage, CommitteeMemType: type, IEEEID: id })
+        console.log("Saved")
         await committee.save()
 
         return res.status(201).json({ success: true, message: 'Added successfully' })

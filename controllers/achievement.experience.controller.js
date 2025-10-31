@@ -11,16 +11,8 @@ export const addExperience = async (req, res, next) => {
         const { name, IEEEID, title, description, facebook, linkedin, startDate, endDate } = req.body
 
 
-        const existingComittee = await Committee.findOne({ name: name, IEEEID })
+        const existingComittee = await Committee.findOne({ name: name, IEEEID,designation:title })
         const existingVolunteer = await Committee.findOne({ name, IEEEID, CommitteeMemType: 'Volunteer' })
-
-
-        if (existingComittee && existingComittee.CommitteeMemType === "Member" && title !== "Volunteer") {
-            return res.status(409).json({ success: false, message: 'member already exists' })
-        }
-        if (existingComittee && existingComittee.CommitteeMemType === "ExCom") {
-            return res.status(409).json({ success: false, message: 'member already exists' })
-        }
 
 
         const experience = new Experience({ title, description:`${title} at IEEE CS LU SB Chapter `, startDate, endDate: endDate || new Date(Date.now()),ieeeId:IEEEID })
@@ -36,9 +28,9 @@ export const addExperience = async (req, res, next) => {
         await existingUser.save()
 
 
-        if (existingVolunteer) {
-            return res.status(200).json({ success: true, message: 'volunteer experience added' })
-        }
+        // if (existingVolunteer) {
+        //     return res.status(200).json({ success: true, message: 'volunteer experience added' })
+        // }
 
 
         const Excom = ["Chairperson", "Vice Chairperson", "Secretary", "Treasurer"]
