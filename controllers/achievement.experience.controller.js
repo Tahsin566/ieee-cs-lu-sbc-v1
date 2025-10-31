@@ -52,7 +52,7 @@ export const addExperience = async (req, res, next) => {
                 user: existingUser._id,
                 hosted_image: existingUser?.profilePicture
             })
-        } else if (title === 'Volunteer') {
+        } else if (title === 'Volunteer' && !existingVolunteer) {
             newMember = new Committee({
                 name: name,
                 IEEEID,
