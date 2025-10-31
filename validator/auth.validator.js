@@ -15,7 +15,7 @@ export const authValidator = (username,email,IEEEID,memberType)=>{
         return {success:false,message:'invalid email'}
     }
     if(!(IEEEIDregex.test(IEEEID)) && IEEEID){
-        return {success:false,message:`invalid ${memberType?.toLowerCase()} IEEE ID, ${memberType?.toLowerCase()==="local" ? 'IEEE ID must be of 6 digits and start with lm': 'IEEE ID must be a number'}`}
+        return {success:false,message:`invalid ${memberType?.toLowerCase()} IEEE ID, ${memberType?.toLowerCase()==="local" ? 'IEEE ID must be of 5 digits and start with lm': 'IEEE ID must be a number'}`}
     }
     return {success:true,message:'Success'}
 }
