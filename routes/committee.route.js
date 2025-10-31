@@ -18,7 +18,7 @@ router.post('/add-committee', protectedRoute, adminRoute, upload.single("image")
         return res.status(400).json({ success: false, message: 'all fields are required' })
     }
 
-    const existingMember = await Committee.findOne({ IEEEID: id })
+    const existingMember = await Committee.findOne({ IEEEID: id ,name,designation})
 
     if (existingMember) {
         name ? existingMember.name = name : null
