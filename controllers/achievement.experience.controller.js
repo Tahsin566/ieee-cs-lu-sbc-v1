@@ -28,7 +28,7 @@ export const addExperience = async (req, res, next) => {
             return res.status(409).json({ success: false, message: 'user does not exists' })
         }
 
-        existingUser.experiences.push(experience._id)
+        existingUser.experiences.push(experience?._id)
         await existingUser.save()
 
 
