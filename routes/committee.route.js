@@ -18,9 +18,13 @@ router.post('/add-committee', protectedRoute, adminRoute, upload.single("image")
         return res.status(400).json({ success: false, message: 'all fields are required' })
     }
 
-    const existingMember = await Committee.findOne({ IEEEID: id ,name,designation})
+    const existingMember = await Committee.findOne({ IEEEID: id ,name})
+
+    const comm_designation = existingMember.designation
+
 
     if (existingMember) {
+
         name ? existingMember.name = name : null
         designation ? existingMember.designation = designation : null
         id ? existingMember.IEEEID = id : null
@@ -48,7 +52,39 @@ router.post('/add-committee', protectedRoute, adminRoute, upload.single("image")
                     await exp?.save()
                 })
             }
+        
         }
+        else if(type === 'ExCom'){
+            console.log('hit')
+            const existingExp = await Experience.find({ title : `Former ${designation}`, ieeeId: id })
+            if (existingExp) {
+                existingExp.forEach(async (exp) => {
+                    exp.title = `${designation}`
+                    exp.description = `${designation} at IEEE CS LU SB Chapter `
+                    await exp?.save()
+                })
+            }
+        }
+        else{
+            const existingExp = await Experience.find({ title : comm_designation, ieeeId: existingMember?.IEEEID })
+            if (existingExp) {
+                existingExp.forEach(async (exp) => {
+                    exp.title = existingMember?.designation
+                    exp.description = `${existingMember?.designation} at IEEE CS LU SB Chapter `
+                    await exp?.save()
+                })
+            }
+        }
+        // else{
+        //     const existingExp = await Experience.find({ title :existingMember?.designation, ieeeId: existingMember?.IEEEID })
+        //     if (existingExp) {
+        //         existingExp.forEach(async (exp) => {
+        //             exp.title = existingMember?.designation
+        //             exp.description = `${existingMember?.designation} at IEEE CS LU SB Chapter `
+        //             await exp?.save()
+        //         })
+        //     }
+        // }
 
         return res.status(200).json({ success: true, message: 'Updated successfully' })
     }
@@ -186,8 +222,8 @@ router.delete('/:id', protectedRoute, adminRoute, async (req, res, next) => {
 
         if(existingExp){
             existingExp.forEach(async (exp) => {
-                exp.title = `Former ${existingMember?.title}` 
-                exp.description = `Former ${existingMember?.title} at IEEE CS LU SB Chapter `
+                exp.title = `Former ${existingMember?.designation}` 
+                exp.description = `Former ${existingMember?.designation} at IEEE CS LU SB Chapter `
                 await exp?.save()
             })
         }
