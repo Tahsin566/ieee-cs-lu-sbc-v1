@@ -8,13 +8,12 @@ import { deleteFile, uploadFile } from "../config/cloudinary.js"
 import fs from "fs"
 import { Committee } from "../models/committee.model.js"
 import { transporter } from "../config/mailconfig.js"
+import { Otp } from "../models/otp.model.js"
 
 export const signUp = async (req, res, next) => {
 
-    const { username, email, password, IEEEID, memberType } = req.body
+    const { username, email, password, IEEEID, memberType,code:otp } = req.body
 
-    console.log('hello')
-    
 
     if (!(username && email && password && IEEEID && memberType)) {
         return res.status(400).json({ success: false, message: 'all fields are required' })
@@ -34,6 +33,13 @@ export const signUp = async (req, res, next) => {
         return res.status(400).json({ success: false, message: isValid.message })
     }
 
+    const code = await Otp.findOne({ email }, { createdAt: false, updatedAt: false })
+
+    if(otp?.toString() !== code?.otp){
+        console.log('invalid otp')
+        console.log(otp,code?.otp)
+        return res.status(400).json({ success: false, message: 'Invalid OTP, please try again' })
+    }
 
 
     try {
@@ -51,7 +57,9 @@ export const signUp = async (req, res, next) => {
         newUser.createdAt = undefined
         newUser.updatedAt = undefined
 
-        return res.cookie('token', token, { expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), httpOnly: true ,sameSite:'none',secure:true}).json({ success: true, user: newUser, token })
+        await Otp.deleteMany({ email })
+
+        return res.cookie('token', token, { expires: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), httpOnly: true, sameSite: 'none', secure: true }).json({ success: true, user: newUser, token })
 
     } catch (error) {
         next(error)
@@ -69,6 +77,13 @@ export const signIn = async (req, res, next) => {
     if (!user) {
         return res.status(404).json({ message: 'user does not exists' })
     }
+
+    const existingOtp = await Otp.findOne({ email })
+
+    if (existingOtp) {
+        await Otp.deleteMany({ email })
+    }
+
     try {
 
 
@@ -87,7 +102,7 @@ export const signIn = async (req, res, next) => {
             user.password = undefined
 
             return res.cookie('token', token, { sameSite: 'none', secure: true, maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true })
-                .json({ success: true, user: user ,token})
+                .json({ success: true, user: user, token })
 
         }
 
@@ -149,7 +164,7 @@ export const uploadProfilePicture = async (req, res, next) => {
 
 export const getProfile = async (req, res, next) => {
 
-    const {user} = req
+    const { user } = req
     try {
         res.status(200).json({ success: true, user: user })
     } catch (error) {
@@ -220,7 +235,7 @@ export const addSocialLinks = async (req, res, next) => {
     if (!foundUser) {
         return res.json({ success: false, message: "User not found" })
     }
-    
+
 
     try {
 
@@ -233,11 +248,11 @@ export const addSocialLinks = async (req, res, next) => {
         }
 
 
-        if(existingCommittee){
+        if (existingCommittee) {
             if (facebook) {
                 existingCommittee.facebook = facebook
             }
-    
+
             if (linkedin) {
                 existingCommittee.linkedin = linkedin
             }
@@ -252,22 +267,22 @@ export const addSocialLinks = async (req, res, next) => {
     }
 }
 
-export const sendOtp = async(req,res,next)=>{
+export const sendOtp = async (req, res, next) => {
 
-    const {email,username} = req.body
+    const { email } = req.body
 
-    const user = await User.findOne({email})
+    const user = await User.findOne({ email })
 
-    if(!user){
+    if (!user) {
         return res.json({ success: false, message: "User not found" })
     }
 
     try {
 
 
-        
+
     } catch (error) {
-        
+
     }
 }
 
@@ -291,6 +306,112 @@ export const ChangePassByAdmin = async (req, res, next) => {
         next(error)
     }
 
+}
+
+export const ChangeUserPassword = async (req, res, next) => {
+
+    const { email, newPassword } = req.body
+
+    const existingUser = await User.findOne({ email })
+
+    if (!existingUser) {
+        return res.json({ success: false, message: "User not found" })
+    }
+
+    try {
+
+        existingUser.password = await bcrypt.hash(newPassword, 10)
+        await existingUser.save()
+        return res.json({ success: true, message: 'Password changed' })
+
+    } catch (error) {
+        next(error)
+    }
+
+}
+
+export const sendVerificationEmail = async (req, res, next) => {
+
+    const { email } = req.body
+
+    const emailregex = /^[a-z0-9]+@(?:gmail\.com|lus\.ac\.bd)$/i
+
+    if (!emailregex.test(email)) {
+        return res.json({ success: false, message: "Invalid email" })
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000)
+
+    const existingOtp = await Otp.findOne({ email })
+
+    if (existingOtp) {
+        existingOtp.otp = otp
+        await existingOtp.save()
+    }
+
+    if(!existingOtp){
+        new Otp({ email, otp }).save()
+    }
+
+    try {
+        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': process.env.API_KEY
+            },
+            body: JSON.stringify({
+                "sender":{
+                    "name":"IEEE CS LU SB Chapter",
+                    "email":"nazmulhassantahsin544@gmail.com"
+                },
+                "to":[
+                    {
+                        "email":email
+                    }
+                ],
+                "subject":"Request for verification code",
+                "htmlContent":`<p>Your verification code: ${otp}</p>`
+            })
+        })
+
+        const data = await response.json()
+        console.log(response.status)
+        return res.json({ success: true, message: "Email sent successfully" })
+
+    } catch (error) {
+        next(error)
+        console.log(error)
+    }
+    
+}
+
+export const verifyOtp = async (req, res, next) => {
+
+    const { code,email } = req.body
+
+    const user = await User.findOne({ email })
+
+    if (!user) {
+        return res.json({ success: false, message: "User not found" })
+    }
+    
+    try {
+        const existingOtp = await Otp.findOne({ email })
+
+        if(code !== existingOtp?.otp){
+            return res.json({ success: false, message: "Invalid OTP" })
+        }
+
+        await Otp.deleteMany({ email })
+
+        res.json({ success: true, message: "OTP verified" })
+
+
+    } catch (error) {
+        next(error)
+    }
+    
 }
 
 
