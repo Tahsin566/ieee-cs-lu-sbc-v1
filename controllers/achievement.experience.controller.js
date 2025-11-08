@@ -32,11 +32,6 @@ export const addExperience = async (req, res, next) => {
         await existingUser?.save()
 
 
-        // if (existingVolunteer) {
-        //     return res.status(200).json({ success: true, message: 'volunteer experience added' })
-        // }
-
-
         const Excom = ["Chairperson", "Vice Chairperson", "Secretary", "Treasurer"]
 
         let newMember
