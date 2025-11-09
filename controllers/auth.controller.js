@@ -106,7 +106,7 @@ export const signIn = async (req, res, next) => {
 
         }
 
-        res.json({ success: false, message: 'incorrect password' })
+        res.json({ success: false, message: 'incorrect email or password' })
 
 
     } catch (error) {
@@ -334,10 +334,16 @@ export const sendVerificationEmail = async (req, res, next) => {
 
     const { email } = req.body
 
-    const emailregex = /^[a-z0-9]+@(?:gmail\.com|lus\.ac\.bd)$/i
+    const emailregex = /^[a-z0-9_]+@(?:gmail\.com|lus\.ac\.bd)$/i
 
     if (!emailregex.test(email)) {
         return res.json({ success: false, message: "Invalid email" })
+    }
+
+    const existingUser = await User.findOne({ email })
+
+    if (!existingUser) {
+        return res.json({ success: false, message: "User not found" })
     }
 
     const otp = Math.floor(100000 + Math.random() * 900000)

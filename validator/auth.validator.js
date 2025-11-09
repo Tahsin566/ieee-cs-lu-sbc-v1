@@ -1,7 +1,7 @@
 
 export const authValidator = (username,email,IEEEID,memberType)=>{
     
-    const emailregex = /^[a-z0-9]+@(?:gmail\.com|lus\.ac\.bd)$/i
+    const emailregex = /^[a-z0-9_]+@(?:gmail\.com|lus\.ac\.bd)$/i
 
     const localregex = /^lm\d{5,}$/
 
