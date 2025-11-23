@@ -19,6 +19,6 @@ const bannerSchema = new mongoose.Schema({
         type:String,
         required:[true,"banner image is required"]
     }
-})
+},{timestamps:true})
 
 export const Banner = mongoose.model("Banner",bannerSchema)

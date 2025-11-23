@@ -13,7 +13,7 @@ const router = express.Router();
 router.get('/', async (req, res, next) => {
 
     try {
-        const banner = await Banner.find().limit(5)
+        const banner = await Banner.find({}, {}, { sort: { createdAt: -1 } })
         res.status(200).json({ success: true, banner })
     } catch (error) {
         next(error)
@@ -31,6 +31,20 @@ router.post('/add-banner', protectedRoute, adminRoute, upload.single("image"), a
         })
         await newBanner.save()
         return res.status(200).json({ success: true, message: "Banner added successfully" })
+    }
+    catch (error) {
+        next(error)
+    }
+})
+
+router.post('/update/:id', protectedRoute, adminRoute, upload.single("image"), async (req, res, next) => {
+
+    try {
+        const banner = await Banner.findById(req.params.id)
+        // banner.image ? await deleteFile(banner?.image) : null
+        // banner.image = await uploadImage(req.file?.path)
+        await banner.save()
+        return res.status(200).json({ success: true, message: "Banner updated successfully" })
     }
     catch (error) {
         next(error)
