@@ -342,10 +342,6 @@ export const sendVerificationEmail = async (req, res, next) => {
 
     const existingUser = await User.findOne({ email })
 
-    if (!existingUser) {
-        return res.json({ success: false, message: "User not found" })
-    }
-
     const otp = Math.floor(100000 + Math.random() * 900000)
 
     const existingOtp = await Otp.findOne({ email })

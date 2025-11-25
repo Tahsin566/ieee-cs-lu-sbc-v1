@@ -98,7 +98,7 @@ export const getFeaturedEvents = async (req, res, next) => {
 export const getEventByCategory = async (req, res, next) => {
     try {
         const { category } = req.params
-        const events = await Event.find({ type: category })
+        const events = await Event.find({ type: category },{}, { sort: { createdAt: -1 } })
         res.status(200).json({ success: true, event: events })
     } catch (error) {
         next(error)

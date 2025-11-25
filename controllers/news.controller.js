@@ -37,7 +37,7 @@ export const getRecentNews = async(req,res,next)=>{
 export const getNewsByCategory = async (req, res, next) => {
     try {
         const { category } = req.params
-        const news = await News.find({ category:category })
+        const news = await News.find({ category:category },{},{sort:{createdAt:-1}})
         res.status(200).json({ success: true, news })
     } catch (error) {
         next(error)
