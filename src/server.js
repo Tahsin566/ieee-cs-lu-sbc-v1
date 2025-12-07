@@ -19,6 +19,7 @@ import IeeeRouter from '../routes/ieee.about.route.js'
 import ExperienceAchievementRouter from '../routes/achievement.experience.route.js'
 import BannerRouter from '../routes/banner.route.js'
 import FaqRouter from '../routes/faq.route.js'
+import PresentationRouter from '../routes/presentation.slide.route.js'
 import GalleryRouter from '../routes/gallery.route.js'
 import { adminRoute } from '../middlewares/admin.middleware.js'
 import { protectedRoute } from '../middlewares/auth.middleware.js'
@@ -54,6 +55,7 @@ app.use('/experience-achievement',ExperienceAchievementRouter)
 app.use('/faq',FaqRouter)
 app.use('/gallery',GalleryRouter)
 app.use('/banner',BannerRouter)
+app.use('/presentation',PresentationRouter)
 
 
 
