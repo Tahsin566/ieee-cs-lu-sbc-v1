@@ -334,7 +334,7 @@ export const sendVerificationEmail = async (req, res, next) => {
 
     const { email } = req.body
 
-    const emailregex = /^[a-z0-9_]+@(?:gmail\.com|lus\.ac\.bd)$/i
+    const emailregex = /^[a-z0-9_\.]+@(?:gmail\.com|lus\.ac\.bd)$/i
 
     if (!emailregex.test(email)) {
         return res.json({ success: false, message: "Invalid email" })

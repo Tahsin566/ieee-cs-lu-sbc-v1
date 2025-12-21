@@ -7,7 +7,13 @@ import { upload } from '../config/multer.js';
 const router = Router();
 
 router.get('/', async (req, res, next) => {
-    res.send('Presentation Slide Route');
+
+    try {
+        const presentationSlide = await PresentationSlide.find({}, {}, { sort: { createdAt: -1 } })
+        res.status(200).json({ success: true, slides: presentationSlide })
+    } catch (error) {
+        next(error)
+    }
 });
 
 router.post('/add',upload.single("image"), async (req, res, next) => {
@@ -23,6 +29,7 @@ router.post('/add',upload.single("image"), async (req, res, next) => {
             drivelink: body.drivelink,
             date: body.date,
             time: body.time,
+            isFeatured: body.isFeatured || false,
             category: body.category,
             slideType: body.type,
             speakerName: body.speakerName,
