@@ -433,7 +433,7 @@ export const approveResearch = async (req, res, next) => {
             const mailOptions = {
                 "sender":{
                     "name":"IEEE CS LU SB Chapter",
-                    "email":"nazmulhassantahsin544@gmail.com"
+                    "email":"ieeecs@lus.ac.bd"
                 },
                 "to":[
                     {
