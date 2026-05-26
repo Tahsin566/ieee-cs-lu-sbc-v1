@@ -421,9 +421,11 @@ export const approveResearch = async (req, res, next) => {
                 },
                 body: JSON.stringify(mailOptions)
             })
+
+            console.log(response.statusText)
     
             if(!response.ok){
-                throw new Error('Failed to send email '+response.statusText)
+                throw new Error('Failed to send email '+ response.statusText)
             }
     
     
@@ -452,6 +454,8 @@ export const approveResearch = async (req, res, next) => {
                 },
                 body: JSON.stringify(mailOptions)
             })
+
+            console.log(response.statusText)
 
             if(!response.ok){
                 throw new Error('Failed to send email '+response.statusText)
