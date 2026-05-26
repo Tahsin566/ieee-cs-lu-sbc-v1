@@ -5,6 +5,10 @@ import { transporter } from '../config/mailconfig.js'
 import { protectedRoute } from '../middlewares/auth.middleware.js'
 import { adminRoute } from '../middlewares/admin.middleware.js'
 
+import dotenv from 'dotenv'
+
+dotenv.config()
+
 const router = express.Router()
 
 router.post('/',async(req,res,next)=>{
@@ -23,20 +27,49 @@ router.post('/',async(req,res,next)=>{
         const newContact = new Contact({name,subject,email,message})
         await newContact.save()
 
-        const mailOptions = {
-            from:email,
-            to: 'nazmulhassantahsin566@gmail.com',
-            subject: subject,
-            html: `<p>Name: ${name}</p><p>Email: ${email}</p><p>Message: ${message}</p>`
-          };
+        // const mailOptions = {
+        //     from:email,
+        //     to: 'nazmulhassantahsin566@gmail.com',
+        //     subject: subject,
+        //     html: `<p>Name: ${name}</p><p>Email: ${email}</p><p>Message: ${message}</p>`
+        //   };
 
-          transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-              console.log(error);
-            } else {
-              console.log('Email sent: ' + info.response);
-            }
-          });
+        //   transporter.sendMail(mailOptions, function(error, info){
+        //     if (error) {
+        //       console.log(error);
+        //     } else {
+        //       console.log('Email sent: ' + info.response);
+        //     }
+        //   });
+
+          const mailOptions = {
+            "sender":{
+                "name":"IEEE CS LU SB Chapter",
+                "email":email
+            },
+            "to":[
+                {
+                    "email":"ieeecs@lus.ac.bd"
+                }
+            ],
+            "subject":subject,
+            "htmlContent":`<p>Name: ${name}</p><p>Email: ${email}</p><p>Message: ${message}</p>`
+        }
+
+        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'api-key': process.env.API_KEY
+            },
+            body: JSON.stringify(mailOptions)
+        })
+
+        console.log(response.statusText)
+
+        if(!response.ok){
+            throw new Error('Failed to send email '+ response.statusText)
+        }
 
         res.status(201).json({success:true,message:'Contact added'})
     } catch (error) {
@@ -54,7 +87,7 @@ router.post('/reply',async(req,res,next)=>{
         const mailOptions = {
             "sender":{
                 "name":"IEEE CS LU SB Chapter",
-                "email":"nazmulhassantahsin544@gmail.com"
+                "email":"ieeecs@lus.ac.bd"
             },
             "to":[
                 {
