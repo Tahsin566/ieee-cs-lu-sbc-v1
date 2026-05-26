@@ -423,7 +423,7 @@ export const approveResearch = async (req, res, next) => {
             })
     
             if(!response.ok){
-                throw new Error('Failed to send email')
+                throw new Error('Failed to send email '+response.statusText)
             }
     
     
@@ -454,7 +454,7 @@ export const approveResearch = async (req, res, next) => {
             })
 
             if(!response.ok){
-                throw new Error('Failed to send email')
+                throw new Error('Failed to send email '+response.statusText)
             }
         }
         let message = existingResearch.isApproved === true ? 'research paper approved' : 'research paper rejected'
