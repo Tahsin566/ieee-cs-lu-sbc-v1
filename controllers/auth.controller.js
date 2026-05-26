@@ -12,7 +12,7 @@ import { Otp } from "../models/otp.model.js"
 
 export const signUp = async (req, res, next) => {
 
-    const { username, email, password, IEEEID, memberType,code:otp } = req.body
+    const { username, email, password, IEEEID, memberType,code:otp } = req.body;
 
 
     if (!(username && email && password && IEEEID && memberType)) {
