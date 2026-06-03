@@ -417,7 +417,7 @@ export const approveResearch = async (req, res, next) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'api-key': process.env.API_KEY
+                    'api-key': process.env.BREVO_API_KEY
                 },
                 body: JSON.stringify(mailOptions)
             })
@@ -450,7 +450,7 @@ export const approveResearch = async (req, res, next) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'api-key': process.env.API_KEY
+                    'api-key': process.env.BREVO_API_KEY
                 },
                 body: JSON.stringify(mailOptions)
             })

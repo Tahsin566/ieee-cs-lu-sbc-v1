@@ -3,15 +3,16 @@ import { Contact,FaqQuery} from '../models/contact.model.js'
 import { validateMessage } from '../validator/message.validator.js'
 import { transporter } from '../config/mailconfig.js'
 import { protectedRoute } from '../middlewares/auth.middleware.js'
-import { adminRoute } from '../middlewares/admin.middleware.js'
-
 import dotenv from 'dotenv'
+import { adminRoute } from '../middlewares/admin.middleware.js'
 
 dotenv.config()
 
 const router = express.Router()
 
 router.post('/',async(req,res,next)=>{
+
+
     const {name,subject,email,message} = req.body
 
     const isValidMessage = validateMessage(name,subject,email,message)
@@ -60,7 +61,7 @@ router.post('/',async(req,res,next)=>{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'api-key': process.env.API_KEY
+                'api-key': process.env.BREVO_API_KEY
             },
             body: JSON.stringify(mailOptions)
         })
@@ -79,6 +80,8 @@ router.post('/',async(req,res,next)=>{
 
 router.post('/reply',async(req,res,next)=>{
     const {name,email,subject,message} = req.body
+
+
     if(!(email && subject && message)){
         return res.status(400).json({success:false,message:'all fields are required'})
     }
@@ -91,10 +94,10 @@ router.post('/reply',async(req,res,next)=>{
             },
             "to":[
                 {
-                    "email":email
+                    "email":email,
                 }
             ],
-            "subject":subject,
+            "subject":subject?.toString(),
             "htmlContent":name ? `<p>Hi ${name}</p><p>Message: ${message}</p>` :`<p>Message: ${message}</p>`
         }
 
@@ -102,7 +105,7 @@ router.post('/reply',async(req,res,next)=>{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'api-key': process.env.API_KEY
+                'api-key': process.env.BREVO_API_KEY
             },
             body: JSON.stringify(mailOptions)
         })

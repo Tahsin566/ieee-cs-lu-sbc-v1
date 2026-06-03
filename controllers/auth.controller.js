@@ -360,12 +360,12 @@ export const sendVerificationEmail = async (req, res, next) => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'api-key': process.env.API_KEY
+                'api-key': process.env.BREVO_API_KEY
             },
             body: JSON.stringify({
                 "sender":{
                     "name":"IEEE CS LU SB Chapter",
-                    "email":"nazmulhassantahsin544@gmail.com"
+                    "email":"ieeecs@lus.ac.bd"
                 },
                 "to":[
                     {
