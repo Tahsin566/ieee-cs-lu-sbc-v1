@@ -410,7 +410,7 @@ export const approveResearch = async (req, res, next) => {
                     }
                 ],
                 "subject":"Confirmation of approval of research paper",
-                "htmlContent":"<p>Hello Tahsin.Your paper has been approved by the IEEE CS LU SB Chapter.You can visit the website to view your work.Please contact IEEE CS LU SB Chapter for more information.</p>"
+                "htmlContent":`<p>Hello Tahsin.Your paper titled : ${existingResearch.title} has been approved by the IEEE CS LU SB Chapter.You can visit the website to view your work.Please contact IEEE CS LU SB Chapter for more information.</p>`
             }
     
             const response = await fetch('https://api.brevo.com/v3/smtp/email', {
@@ -443,7 +443,7 @@ export const approveResearch = async (req, res, next) => {
                     }
                 ],
                 "subject":"Confirmation of rejection of research paper",
-                "htmlContent":"<p>Hello Tahsin.Your paper has been rejected by the IEEE CS LU SB Chapter..Please contact IEEE CS LU SB Chapter for more information.</p>"
+                "htmlContent":`<p>Hello Tahsin.Your paper titled : ${existingResearch.title} has been rejected by the IEEE CS LU SB Chapter.Please contact IEEE CS LU SB Chapter for more information.</p>`
             }
     
             const response = await fetch('https://api.brevo.com/v3/smtp/email', {
