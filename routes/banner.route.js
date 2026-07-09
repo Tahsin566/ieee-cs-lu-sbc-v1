@@ -7,61 +7,16 @@ import { upload } from '../config/multer.js';
 import fs from 'fs';
 import path from 'path';
 import { deleteFile, uploadFile, uploadImage } from '../config/cloudinary.js';
+import { addBanner, deleteBanner, getAllBanner, updateBanner } from '../controllers/banner.controller.js';
 
 const router = express.Router();
 
-router.get('/', async (req, res, next) => {
+router.get('/',getAllBanner)
 
-    try {
-        const banner = await Banner.find({}, {}, { sort: { createdAt: -1 } })
-        res.status(200).json({ success: true, banner })
-    } catch (error) {
-        next(error)
-    }
-});
+router.post('/add-banner', protectedRoute, adminRoute, upload.single("image"), addBanner)
 
-router.post('/add-banner', protectedRoute, adminRoute, upload.single("image"), async (req, res, next) => {
+router.post('/update/:id', protectedRoute, adminRoute, upload.single("image"), updateBanner)
 
-    try {
-        const newBanner = new Banner({
-            title: req.body.title || '',
-            bannerType: req.body.type || '',
-            description: req.body.description || '',
-            image: await uploadImage(req.file?.path) || '',
-        })
-        await newBanner.save()
-        return res.status(200).json({ success: true, message: "Banner added successfully" })
-    }
-    catch (error) {
-        next(error)
-    }
-})
-
-router.post('/update/:id', protectedRoute, adminRoute, upload.single("image"), async (req, res, next) => {
-
-    try {
-        const banner = await Banner.findById(req.params.id)
-        // banner.image ? await deleteFile(banner?.image) : null
-        // banner.image = await uploadImage(req.file?.path)
-        await banner.save()
-        return res.status(200).json({ success: true, message: "Banner updated successfully" })
-    }
-    catch (error) {
-        next(error)
-    }
-})
-
-router.delete('/:id', protectedRoute, adminRoute, async (req, res, next) => {
-    try {
-        const banner = await Banner.findById(req.params.id)
-        banner.image ? await deleteFile(banner?.image) : null
-
-        const bannerDeleted = await Banner.findByIdAndDelete(req.params.id)
-
-        return res.status(404).json({ success: true, message: "Banner deleted" })
-    } catch (error) {
-        next(error)
-    }
-})
+router.delete('/:id', protectedRoute, adminRoute, deleteBanner)
 
 export default router;

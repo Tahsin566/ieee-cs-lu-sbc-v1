@@ -5,178 +5,22 @@ import { transporter } from '../config/mailconfig.js'
 import { protectedRoute } from '../middlewares/auth.middleware.js'
 import dotenv from 'dotenv'
 import { adminRoute } from '../middlewares/admin.middleware.js'
+import { addContact, addQueryFromUser, deleteContact, getAllContacts, replyToMessage, toggleReadStatus } from '../controllers/contact.controller.js'
 
 dotenv.config()
 
 const router = express.Router()
 
-router.post('/',async(req,res,next)=>{
+router.post('/',addContact)
 
+router.post('/reply',replyToMessage)
 
-    const {name,subject,email,message} = req.body
+router.post('/faq-query',addQueryFromUser)
 
-    const isValidMessage = validateMessage(name,subject,email,message)
+router.patch('/:id',protectedRoute,adminRoute,toggleReadStatus)
 
-    if(!isValidMessage){
-        return res.status(400).json({success:false,message:'invalid message'})
-    }
+router.get('/',getAllContacts)
 
-    if(!(name && subject && email && message)){
-        return res.status(400).json({success:false,message:'all fields are required'})
-    }
-    try {
-        const newContact = new Contact({name,subject,email,message})
-        await newContact.save()
-
-        // const mailOptions = {
-        //     from:email,
-        //     to: 'nazmulhassantahsin566@gmail.com',
-        //     subject: subject,
-        //     html: `<p>Name: ${name}</p><p>Email: ${email}</p><p>Message: ${message}</p>`
-        //   };
-
-        //   transporter.sendMail(mailOptions, function(error, info){
-        //     if (error) {
-        //       console.log(error);
-        //     } else {
-        //       console.log('Email sent: ' + info.response);
-        //     }
-        //   });
-
-          const mailOptions = {
-            "sender":{
-                "name":"IEEE CS LU SB Chapter",
-                "email":email
-            },
-            "to":[
-                {
-                    "email":"ieeecs@lus.ac.bd"
-                }
-            ],
-            "subject":subject,
-            "htmlContent":`<p>Name: ${name}</p><p>Email: ${email}</p><p>Message: ${message}</p>`
-        }
-
-        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'api-key': process.env.BREVO_API_KEY
-            },
-            body: JSON.stringify(mailOptions)
-        })
-
-        console.log(response.statusText)
-
-        if(!response.ok){
-            throw new Error('Failed to send email '+ response.statusText)
-        }
-
-        res.status(201).json({success:true,message:'Contact added'})
-    } catch (error) {
-        next(error)
-    }
-})
-
-router.post('/reply',async(req,res,next)=>{
-    const {name,email,subject,message} = req.body
-
-
-    if(!(email && subject && message)){
-        return res.status(400).json({success:false,message:'all fields are required'})
-    }
-
-    try {
-        const mailOptions = {
-            "sender":{
-                "name":"IEEE CS LU SB Chapter",
-                "email":"ieeecs@lus.ac.bd"
-            },
-            "to":[
-                {
-                    "email":email,
-                }
-            ],
-            "subject":subject?.toString(),
-            "htmlContent":name ? `<p>Hi ${name}</p><p>Message: ${message}</p>` :`<p>Message: ${message}</p>`
-        }
-
-        const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'api-key': process.env.BREVO_API_KEY
-            },
-            body: JSON.stringify(mailOptions)
-        })
-
-        if(!response.ok){
-            throw new Error('Failed to send email')
-        }
-
-        return res.status(200).json({success:true,message:'Reply sent'})
-    }
-    catch (error) {
-        next(error)
-    }
-})
-
-
-router.post('/faq-query',async(req,res,next)=>{
-
-    const {email,question} = req.body
-    if(!(email && question)){
-        return res.status(400).json({success:false,message:'all fields are required'})
-    }
-
-    const existingFaq = await FaqQuery.findOne({email,question})
-    if(existingFaq){
-        return res.status(409).json({success:false,message:'faq query already exists'})
-    }
-    
-    try {
-        const newFaq = new FaqQuery({email,question})
-        await newFaq.save()
-        res.status(201).json({success:true,message:'Faq query added'})
-    } catch (error) {
-        next(error)
-    }
-
-})
-
-router.patch('/:id',protectedRoute,adminRoute,async(req,res,next)=>{
-    try {
-        const contact = await Contact.findById(req.params.id)
-        contact.isRead === true ? contact.isRead = false : contact.isRead = true
-        const message = contact.isRead === true ? 'Read' : 'Unread'
-        await contact.save()
-        res.status(200).json({success:true,message:message})
-    }
-    catch (error) {
-        next(error)
-    }
-})
-
-router.get('/',async(req,res,next)=>{
-    try {
-        const contact = await Contact.find({},{createdAt:0,updatedAt:0})
-        res.status(200).json({success:true,contact})
-    } catch (error) {
-        next(error)
-    }
-})
-
-router.delete('/:id',protectedRoute,adminRoute,async(req,res,next)=>{
-    try {
-        const contact = await Contact.findById(req.params.id)
-        if(!contact){
-            return res.status(404).json({success:true,message:'Contact does not exists'})
-        }
-        await contact.deleteOne()
-        return res.status(200).json({success:true,message:'Contact deleted'})
-    } catch (error) {
-        next(error)
-    }
-})
+router.delete('/:id',protectedRoute,adminRoute,deleteContact)
 
 export default router
